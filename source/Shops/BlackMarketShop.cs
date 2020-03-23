@@ -10,12 +10,15 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops
 {
-    public class BlackMarketShop : TaggedShop
+    public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction
     {
-        public override string Name => "Black Market";
+        public override string Name => "BlackMarket";
+        public override string TabText => "Black Market";
+        public override string HeaderText => "Black Market";
         public override Sprite Sprite => Control.State.BlacMarketSprite;
         public override Color IconColor => Color.magenta;
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.BlackMarketStoreColor.color;
+        public FactionValue RelatedFaction => FactionEnumeration.GetAuriganPiratesFactionValue();
 
         public override bool Exists =>  Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.BlackMarketShopItems != null;
         public override bool CanUse => true; // Control.State.CurrentSystem == null ? false : Control.State.Sim.CompanyTags.Contains(Control.State.Sim.Constants.Story.BlackMarketTag);

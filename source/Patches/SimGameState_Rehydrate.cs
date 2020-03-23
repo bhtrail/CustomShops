@@ -20,29 +20,32 @@ namespace CustomShops.Patches
             Control.State.CurrentSystem = __instance.CurSystem;
             SerializableReferenceContainer globalReferences = gameInstanceSave.GlobalReferences;
             Control.LogDebug("Loading Shops");
-            foreach (var shop in Control.Shops.Where(i => i.NeedSave))
+            foreach (var shop in Control.Shops)
             {
-                var name = "Shop" + shop.Name;
-                Control.LogDebug("- " + shop.Name);
-                try
+                if (shop.NeedSave)
                 {
-                    var Shop = globalReferences.GetItem<Shop>(name);
-                    shop.SetLoadedShop(Shop);
-                    if (shop.RefreshOnGameLoad)
-                        shop.RefreshShop();
+                    var name = "Shop" + shop.Name;
+                    Control.LogDebug("- " + shop.Name);
+                    try
+                    {
+                        var Shop = globalReferences.GetItem<Shop>(name);
+                        shop.SetLoadedShop(Shop);
+                        if (shop.RefreshOnGameLoad)
+                            shop.RefreshShop();
 
-                    if (Shop != null)
-                        Control.LogDebug("-- " + shop.Name + " Loaded");
-                    else
-                        Control.LogDebug("-- " + shop.Name + " Notfound");
+                        if (Shop != null)
+                            Control.LogDebug("-- " + shop.Name + " Loaded");
+                        else
+                            Control.LogDebug("-- " + shop.Name + " Notfound");
+                    }
+                    catch
+                    {
+                        Control.LogError($"Error finding {name} Create new");
+                        shop.SetLoadedShop(null);
+                    }
                 }
-                catch
-                {
-                    Control.LogError($"Error finding {name} Create new");
-                    shop.SetLoadedShop(null);
-                    if (shop.RefreshOnGameLoad)
-                        shop.RefreshShop();
-                }
+                if (shop.RefreshOnGameLoad || !shop.NeedSave)
+                    shop.RefreshShop();
             }
         }
     }

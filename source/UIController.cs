@@ -34,6 +34,7 @@ namespace CustomShops
                 if (shop.Exists)
                 {
                     button.Button.SetImageAndText(shop.Sprite, shop.Name);
+                    button.Icon.color = shop.IconColor;
 
                     button.ButtonHolder.SetActive(true);
                     if (shop.CanUse)
@@ -89,7 +90,7 @@ namespace CustomShops
                 ShopHelper.SimGame.RequestItem<Sprite>(SG_Shop_Screen.BLACKMARKET_ICON,
                     (sprite) => Control.State.BlacMarketSprite = sprite,
                     BattleTechResourceType.Sprite);
-                               
+
 
                 Control.LogDebug("-- Hide original buttons");
                 ShopHelper.SystemStoreButtonHoldingObject.SetActive(false);
@@ -110,17 +111,65 @@ namespace CustomShops
 
         }
 
-        public static void RefreshColors()
-        { 
-            
+        public static void RefreshColors(IShopDescriptor shop)
+        {
+            if (shop != null)
+            {
+                var color = shop.ShopColor;
+                foreach (var crtrack in ShopHelper.ColorAffectors)
+                    crtrack.OverrideWithColor(color);
+
+                color.a *= SG_Shop_Screen.CENTER_BG_ALPHASCALAR;
+                ShopHelper.LargeBGFillColor.OverrideWithColor(color);
+            }
         }
 
         internal static void TabSelected(IShopDescriptor shop)
         {
             Control.LogDebug($"Pressed {shop.Name}");
             ActiveShop = shop;
-            ShopScreen.ChangeToBuy(shop.ShopToUse, true);
-            RefreshColors();
+
+            SwitchAndInit(shop);
+            RefreshColors(shop);
+            UpdateHeader(shop);
+            FillInData(shop);
+        }
+
+        private static void SwitchAndInit(IShopDescriptor shop)
+        {
+            if (shop == null)
+                return;
+
+            if (shop is IDefaultShop def_shop)
+            {
+                ShopScreen.ChangeToBuy(def_shop.ShopToUse, true);
+            }
+            else
+            {
+                //TODO: ICustomShop
+            }
+        }
+
+        private static void FillInData(IShopDescriptor shop)
+        {
+            if (shop == null)
+                return;
+
+            if (shop is IFillWidgetFromFaction fill_shop)
+            { 
+                
+            }
+
+        }
+
+        private static void UpdateHeader(IShopDescriptor shop)
+        {
+            if (shop == null)
+                return;
+
+            ShopHelper.StoreHeaderText.SetText(shop.HeaderText);
+            ShopHelper.SetHeaderImageSpriteBySprite(shop.Sprite);
+            ShopHelper.StoreHeaderImageColor.OverrideWithColor(shop.IconColor);
         }
     }
 }

@@ -9,9 +9,12 @@ using Harmony;
 
 namespace CustomShops
 {
-    public abstract class TaggedShop : IShopDescriptor
+    public abstract class TaggedShop : IShopDescriptor, IDefaultShop
     {
         public abstract string Name { get; }
+        public abstract string TabText { get; }
+        public abstract string HeaderText { get; }
+        public abstract string ShopPanelImage { get; }
         public abstract Sprite Sprite { get; }
         public abstract Color IconColor { get; }
         public abstract Color ShopColor { get; }
@@ -23,6 +26,7 @@ namespace CustomShops
         public Shop Shop { get; set; }
         public Traverse ShopT;
 
+        public Shop ShopToUse => Shop;
 
         public abstract bool RefreshOnSystemChange { get; }
         public abstract bool RefreshOnMonthChange { get; }

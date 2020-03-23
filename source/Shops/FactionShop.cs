@@ -5,9 +5,11 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops
 {
-    public class FactionShop : TaggedShop
+    public class FactionShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction
     {
         public override string Name => "Faction";
+        public override string TabText => RelatedFaction == null ? "ERROR_FACTION" : RelatedFaction.Name;
+        public override string HeaderText => "Faction";
         public override Sprite Sprite
         {
             get
@@ -22,7 +24,6 @@ namespace CustomShops.Shops
                 return owner.FactionDef.GetSprite();
             }
         }
-
         public override Color IconColor
         {
             get
@@ -47,6 +48,7 @@ namespace CustomShops.Shops
                 return owner.FactionDef.GetFactionStoreColor(out var color) ? color : LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
             }
         }
+        public FactionValue RelatedFaction => Control.State.CurrentSystem.Def.FactionShopOwnerValue;
 
         public override bool Exists => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.FactionShopItems != null;
         public override bool CanUse => true; //Control.State.CurrentSystem == null ? false : Control.State.Sim.IsFactionAlly(Control.State.CurrentSystem.Def.FactionShopOwnerValue);

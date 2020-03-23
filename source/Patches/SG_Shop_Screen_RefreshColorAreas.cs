@@ -16,7 +16,7 @@ namespace CustomShops.Patches
         [HarmonyPrefix]
         public static bool Prefix()
         {
-            UIControler.RefreshColors();
+            UIControler.RefreshColors(UIControler.ActiveShop);
             return false;
         }
     }
