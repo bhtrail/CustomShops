@@ -1,0 +1,17 @@
+{
+	"Name": "CustomShops",
+	"Author": "Denadan",
+	"Website": "https://github.com/Denadan/CustomShops",
+
+	"Enabled": true,
+	"DependsOn": [],
+	"DLL": "CustomShops.dll",
+	"DLLEntryPoint": "CustomShops.Control.Init",
+	
+	"Settings" : {
+		"LogLevel" : "Debug",      
+	},	
+		
+	"Manifest": [
+	]
+}
