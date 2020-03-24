@@ -17,18 +17,21 @@ namespace CustomShops.Patches
         public static void SaveShops(SerializableReferenceContainer references)
         {
             Control.LogDebug("Saving Shops");
-            foreach (var shop in Control.Shops.Where(i => i.NeedSave))
+            foreach (var shop in Control.Shops)
             {
-                Control.LogDebug("- " + shop.Name);
-                var shop_to_save = shop.GetShopToSave();
-                if (shop_to_save != null)
+                if (shop is ISaveShop save)
                 {
-                    references.AddItem<Shop>("Shop" + shop.Name, shop_to_save);
-                    Control.LogDebug("-- Saved as Shop" + shop.Name);
-                }
-                else
-                {
-                    Control.LogDebug("-- no shop to save");
+                    Control.LogDebug("- " + shop.Name);
+                    var shop_to_save = save.GetShopToSave();
+                    if (shop_to_save != null)
+                    {
+                        references.AddItem<Shop>("Shop" + shop.Name, shop_to_save);
+                        Control.LogDebug("-- Saved as Shop" + shop.Name);
+                    }
+                    else
+                    {
+                        Control.LogDebug("-- no shop to save");
+                    }
                 }
             }
         }

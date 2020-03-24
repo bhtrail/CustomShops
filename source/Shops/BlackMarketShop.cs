@@ -10,13 +10,13 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops
 {
-    public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction
+    public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon
     {
         public override string Name => "BlackMarket";
         public override string TabText => "Black Market";
         public override string HeaderText => "Black Market";
         public override string ShopPanelImage => SG_Stores_StoreImagePanel.BLACK_MARKET_ILLUSTRATION;
-        public override Sprite Sprite => Control.State.BlacMarketSprite;
+        public string SpriteID => SG_Shop_Screen.BLACKMARKET_ICON;
         public override Color IconColor => Color.magenta;
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.BlackMarketStoreColor.color;
         public FactionValue RelatedFaction => FactionEnumeration.GetAuriganPiratesFactionValue();
@@ -26,8 +26,6 @@ namespace CustomShops.Shops
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => false;
-        public override bool RefreshOnGameLoad => false;
-        public override bool NeedSave => true;
 
 
         public override void Initilize()
@@ -39,7 +37,8 @@ namespace CustomShops.Shops
         public override void SetLoadedShop(Shop shop)
         {
             Tags = Control.State.CurrentSystem.Def.BlackMarketShopItems;
-            Initilize();
+            base.SetLoadedShop(shop);
         }
+
     }
 }

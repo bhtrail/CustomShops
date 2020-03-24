@@ -18,34 +18,32 @@ namespace CustomShops.Patches
         public static void LoadShops(GameInstanceSave gameInstanceSave, SimGameState __instance)
         {
             Control.State.CurrentSystem = __instance.CurSystem;
+            Control.State.Sim = __instance;
+
             SerializableReferenceContainer globalReferences = gameInstanceSave.GlobalReferences;
             Control.LogDebug("Loading Shops");
             foreach (var shop in Control.Shops)
             {
-                if (shop.NeedSave)
+                if (shop is ISaveShop save)
                 {
                     var name = "Shop" + shop.Name;
                     Control.LogDebug("- " + shop.Name);
                     try
                     {
                         var Shop = globalReferences.GetItem<Shop>(name);
-                        shop.SetLoadedShop(Shop);
+                        save.SetLoadedShop(Shop);
 
-                        if (Shop != null)
-                        {
-                            Control.LogDebug("-- " + shop.Name + " Loaded");
-                            Control.LogDebug($"-- total {Shop.ActiveInventory.Count} items");
-                        }
-                        else
-                            Control.LogDebug("-- " + shop.Name + " Notfound");
+                        Control.LogDebug("-- " + shop.Name + " Loaded");
+                        Control.LogDebug($"-- total {Shop.ActiveInventory.Count} items");
                     }
-                    catch
+                    catch (Exception e)
                     {
                         Control.LogError($"Error finding {name} Create new");
-                        shop.SetLoadedShop(null);
+                        shop.RefreshShop();
+                        Control.LogDebug("-- total " + save.GetShopToSave().ActiveInventory.Count + " items");
                     }
                 }
-                if (shop.RefreshOnGameLoad || !shop.NeedSave)
+                else
                     shop.RefreshShop();
             }
         }

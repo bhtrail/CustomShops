@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,15 @@ namespace CustomShops
 
                 if (shop.Exists)
                 {
-                    button.Button.SetImageAndText(shop.Sprite, shop.Name);
+                    if (shop is ISpriteIcon spr_icon)
+                        button.Button.SetImageAndText(spr_icon.Sprite, shop.Name);
+                    else if (shop is ITextIcon txt_icon)
+                        Control.State.Sim.RequestItem<Sprite>(
+                            txt_icon.SpriteID,
+                            delegate (Sprite sprite) { button.Button.SetImageAndText(sprite, shop.Name); },
+                            BattleTechResourceType.Sprite
+                            );
+
                     button.Icon.color = shop.IconColor;
 
                     button.ButtonHolder.SetActive(true);
@@ -59,8 +68,15 @@ namespace CustomShops
             {
                 active.Button.ForceRadioSetSelection();
                 ActiveShop = active.Shop;
-                TabSelected(ActiveShop);
+                ShopScreen.StartCoroutine(SwitchAtEndOfFrame());
             }
+        }
+
+        private static IEnumerator SwitchAtEndOfFrame()
+        {
+            yield return new WaitForEndOfFrame();
+            TabSelected(ActiveShop);
+            yield break;
         }
 
         private static void SetupButtons(SG_Shop_Screen shop_screen)
@@ -129,19 +145,28 @@ namespace CustomShops
             Control.LogDebug($"Pressed {shop.Name}");
             ActiveShop = shop;
 
-            SwitchAndInit(shop);
-            RefreshColors(shop);
-            UpdateHeader(shop);
-            FillInData(shop);
+            try
+            {
+                SwitchAndInit(shop);
+                RefreshColors(shop);
+                UpdateHeader(shop);
+                FillInData(shop);
+            }
+            catch (Exception e)
+            {
+                Control.LogError("Error while switching shop", e);
+            }
         }
 
         private static void SwitchAndInit(IShopDescriptor shop)
         {
+            Control.LogDebug($"- fill shop");
             if (shop == null)
                 return;
 
             if (shop is IDefaultShop def_shop)
             {
+                Control.LogDebug($"-- IDefaultShop");
                 ShopScreen.ChangeToBuy(def_shop.ShopToUse, true);
             }
             else
@@ -152,11 +177,13 @@ namespace CustomShops
 
         private static void FillInData(IShopDescriptor shop)
         {
+            Control.LogDebug($"- fill data");
             if (shop == null)
                 return;
 
             if (shop is IFillWidgetFromFaction fill_shop)
             {
+                Control.LogDebug($"-- IFillWidgetFromFaction");
                 ShopHelper.FillInWithFaction(shop);
             }
 
@@ -164,11 +191,22 @@ namespace CustomShops
 
         private static void UpdateHeader(IShopDescriptor shop)
         {
+            Control.LogDebug($"- update header");
             if (shop == null)
                 return;
 
             ShopHelper.StoreHeaderText.SetText(shop.HeaderText);
-            ShopHelper.SetHeaderImageSpriteBySprite(shop.Sprite);
+
+            if (shop is ISpriteIcon spr_icon)
+                ShopHelper.SetHeaderImageSpriteBySprite(spr_icon.Sprite);
+            else if (shop is ITextIcon txt_icon)
+                Control.State.Sim.RequestItem<Sprite>(
+                    txt_icon.SpriteID,
+                    delegate (Sprite sprite) { ShopHelper.SetHeaderImageSpriteBySprite(sprite); },
+                    BattleTechResourceType.Sprite
+                    );
+
+            
             ShopHelper.StoreHeaderImageColor.OverrideWithColor(shop.IconColor);
         }
     }

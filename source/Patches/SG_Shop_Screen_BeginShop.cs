@@ -19,8 +19,6 @@ namespace CustomShops.Patches
         {
             UIControler.InitShopWindow(__instance);
 
-
-
             return false;
         }
     }

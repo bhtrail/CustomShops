@@ -9,13 +9,12 @@ using Harmony;
 
 namespace CustomShops
 {
-    public abstract class TaggedShop : IShopDescriptor, IDefaultShop
+    public abstract class TaggedShop : IShopDescriptor, IDefaultShop, ISaveShop
     {
         public abstract string Name { get; }
         public abstract string TabText { get; }
         public abstract string HeaderText { get; }
         public abstract string ShopPanelImage { get; }
-        public abstract Sprite Sprite { get; }
         public abstract Color IconColor { get; }
         public abstract Color ShopColor { get; }
 
@@ -31,9 +30,6 @@ namespace CustomShops
         public abstract bool RefreshOnSystemChange { get; }
         public abstract bool RefreshOnMonthChange { get; }
         public abstract bool RefreshOnOwnerChange { get; }
-        public abstract bool RefreshOnGameLoad { get; }
-        public abstract bool NeedSave { get; }
-
 
         public virtual void Initilize()
         {
@@ -65,11 +61,17 @@ namespace CustomShops
             Shop.RefreshShop();
         }
 
-        public virtual Shop GetShopToSave()
+        public virtual Shop GetShopToSave() { return Shop;  }
+        public virtual void SetLoadedShop(Shop shop)
         {
-            return Shop;
+            Shop = shop;
+            if (shop != null)
+            {
+                ShopT = new Traverse(Shop);
+                Shop.Rehydrate(Control.State.Sim, Control.State.CurrentSystem, Tags, Shop.RefreshType.None, Shop.ShopType.System);
+            }
+            else
+                Initilize();
         }
-
-        public abstract void SetLoadedShop(Shop shop);
     }
 }

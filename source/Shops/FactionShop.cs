@@ -5,7 +5,7 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops
 {
-    public class FactionShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction
+    public class FactionShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ISpriteIcon
     {
         public override string Name => "Faction";
         public override string TabText => RelatedFaction == null ? "ERROR_FACTION" : RelatedFaction.Name;
@@ -22,7 +22,8 @@ namespace CustomShops.Shops
                     RelatedFaction.FactionDef.storePanelImage;
             }
         }
-        public override Sprite Sprite
+
+        public virtual Sprite Sprite
         {
             get
             {
@@ -67,8 +68,6 @@ namespace CustomShops.Shops
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => true;
-        public override bool RefreshOnGameLoad => false;
-        public override bool NeedSave => true;
 
 
 
@@ -77,11 +76,10 @@ namespace CustomShops.Shops
             Tags = Control.State.CurrentSystem.Def.FactionShopItems;
             base.Initilize();
         }
-
         public override void SetLoadedShop(Shop shop)
         {
-            Tags = Control.State.CurrentSystem.Def.BlackMarketShopItems;
-            Initilize();
+            Tags = Control.State.CurrentSystem.Def.FactionShopItems;
+            base.SetLoadedShop(shop);
         }
 
     }

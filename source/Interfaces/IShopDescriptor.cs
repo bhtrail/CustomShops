@@ -14,7 +14,6 @@ namespace CustomShops
         string TabText { get; }
         string HeaderText { get; }
         string ShopPanelImage { get; }
-        Sprite Sprite { get; }
         public Color IconColor { get; }
         public Color ShopColor { get; }
         public bool Exists { get; }
@@ -23,12 +22,6 @@ namespace CustomShops
         public bool RefreshOnSystemChange { get; }
         public bool RefreshOnMonthChange { get; }
         public bool RefreshOnOwnerChange { get; }
-        public bool RefreshOnGameLoad { get; }
-
-        public bool NeedSave { get; }
-        public Shop GetShopToSave();
-        public void SetLoadedShop(Shop shop);
-
         void RefreshShop();
     }
 }

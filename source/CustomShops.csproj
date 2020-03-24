@@ -98,13 +98,17 @@
   <ItemGroup>
     <Compile Include="Control.cs" />
     <Compile Include="CustomShopsSettings.cs" />
+    <Compile Include="DEBUG_Patches\SG_Shop_Screen_ChangeToBuy.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="Interfaces\IconInterfaces.cs" />
     <Compile Include="Interfaces\IDefaultShop.cs" />
     <Compile Include="Interfaces\FactionInterfaces.cs" />
+    <Compile Include="Interfaces\ISaveShop.cs" />
     <Compile Include="Interfaces\IShopDescriptor.cs" />
     <Compile Include="Patches\SG_Shop_Screen_RefreshColorAreas.cs" />
     <Compile Include="Patches\SG_Shop_Screen_BeginShop.cs" />
     <Compile Include="Patches\SimGameState_Dehydrate.cs" />
+    <Compile Include="Patches\SimGameState_Init.cs" />
     <Compile Include="Patches\SimGameState_Rehydrate.cs" />
     <Compile Include="Patches\SimGameState_SetCurrentSystem.cs" />
     <Compile Include="Patches\StarSystem_Dehydrate.cs" />

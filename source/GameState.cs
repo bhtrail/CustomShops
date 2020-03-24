@@ -13,6 +13,6 @@ namespace CustomShops
         public StarSystem CurrentSystem { get; internal set; }
         public Sprite SystemShopSprite { get; internal set; }
         public Sprite BlacMarketSprite { get; internal set; }
-        public SimGameState Sim => UnityGameInstance.BattleTechGame.Simulation;
-    }
+        public SimGameState Sim { get; internal set; }
+}
 }
