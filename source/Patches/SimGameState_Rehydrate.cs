@@ -30,11 +30,12 @@ namespace CustomShops.Patches
                     {
                         var Shop = globalReferences.GetItem<Shop>(name);
                         shop.SetLoadedShop(Shop);
-                        if (shop.RefreshOnGameLoad)
-                            shop.RefreshShop();
 
                         if (Shop != null)
+                        {
                             Control.LogDebug("-- " + shop.Name + " Loaded");
+                            Control.LogDebug($"-- total {Shop.ActiveInventory.Count} items");
+                        }
                         else
                             Control.LogDebug("-- " + shop.Name + " Notfound");
                     }

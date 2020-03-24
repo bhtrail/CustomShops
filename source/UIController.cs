@@ -156,8 +156,8 @@ namespace CustomShops
                 return;
 
             if (shop is IFillWidgetFromFaction fill_shop)
-            { 
-                
+            {
+                ShopHelper.FillInWithFaction(shop);
             }
 
         }

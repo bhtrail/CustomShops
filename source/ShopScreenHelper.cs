@@ -1,10 +1,12 @@
 ﻿using BattleTech;
 using BattleTech.UI;
 using BattleTech.UI.TMProWrapper;
+using BattleTech.UI.Tooltips;
 using Harmony;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CustomShops
 {
@@ -22,10 +24,15 @@ namespace CustomShops
         public SimGameState SimGame { get; private set; }
         public List<UIColorRefTracker> ColorAffectors { get; private set; }
         public UIColorRefTracker LargeBGFillColor { get; private set; }
-        
+
         public LocalizableText StoreHeaderText { get; private set; }
         public UIColorRefTracker StoreHeaderImageColor { get; private set; }
+
         private MethodInfo setHeaderImageSpriteBySprite;
+        private LocalizableText CurrSystemText;
+        private Image StoreImage;
+        private SG_Stores_MiniFactionWidget miniFactionWidget;
+        private HBSTooltip PlanetToolitp;
 
         public ShopScreenHelper(SG_Shop_Screen screen)
         {
@@ -45,7 +52,10 @@ namespace CustomShops
             setHeaderImageSpriteBySprite = AccessTools.Method(typeof(SG_Shop_Screen), "SetHeaderImageSpriteBySprite");
 
             var StoreImagePanel = Main.Field("StoreImagePanel");
-            SG_Stores_MiniFactionWidget miniFactionWidget = StoreImagePanel.Field<SG_Stores_MiniFactionWidget>("miniFactionWidget").Value;
+            miniFactionWidget = StoreImagePanel.Field<SG_Stores_MiniFactionWidget>("miniFactionWidget").Value;
+            CurrSystemText = StoreImagePanel.Field<LocalizableText>("CurrSystemText").Value;
+            StoreImage = StoreImagePanel.Field<Image>("StoreImage").Value;
+            PlanetToolitp = StoreImagePanel.Field<HBSTooltip>("PlanetToolitp").Value;
         }
 
         public void SetHeaderImageSpriteBySprite(Sprite sprite)
@@ -53,12 +63,17 @@ namespace CustomShops
             setHeaderImageSpriteBySprite.Invoke(Screen, new object[] { sprite });
         }
 
-        public void FillInWithFaction(FactionValue faction, IShopDescriptor shop)
+        public void FillInWithFaction(IShopDescriptor shop)
         {
+            var faction = (shop as IFillWidgetFromFaction).RelatedFaction;
             if (faction == null)
                 faction = FactionEnumeration.GetInvalidUnsetFactionValue();
 
-
+            Control.State.Sim.RequestItem<Sprite>(shop.ShopPanelImage, sprite => StoreImage.sprite = sprite, BattleTechResourceType.Sprite);
+            miniFactionWidget.FillInData(faction);
+            CurrSystemText.SetText(Control.State.CurrentSystem.Name);
+            if (PlanetToolitp != null)
+                PlanetToolitp.SetDefaultStateData(TooltipUtilities.GetStateDataFromObject(Control.State.CurrentSystem));
         }
     }
 }

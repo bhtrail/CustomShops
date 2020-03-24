@@ -10,6 +10,18 @@ namespace CustomShops.Shops
         public override string Name => "Faction";
         public override string TabText => RelatedFaction == null ? "ERROR_FACTION" : RelatedFaction.Name;
         public override string HeaderText => "Faction";
+        public override string ShopPanelImage
+        {
+            get
+            {
+                if(RelatedFaction == null)
+                    return SG_Stores_StoreImagePanel.BLACK_MARKET_ILLUSTRATION;
+
+                return string.IsNullOrEmpty(RelatedFaction.FactionDef.storePanelImage) ?
+                    SG_Stores_StoreImagePanel.BLACK_MARKET_ILLUSTRATION :
+                    RelatedFaction.FactionDef.storePanelImage;
+            }
+        }
         public override Sprite Sprite
         {
             get
@@ -33,7 +45,7 @@ namespace CustomShops.Shops
                 var owner = Control.State.CurrentSystem.Def.FactionShopOwnerValue;
                 if (owner == null)
                     return LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
-                return owner.FactionDef.GetFactionStoreColor(out var color) ?  color :  LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
+                return owner.FactionDef.GetFactionStoreColor(out var color) ? color : LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
             }
         }
         public override Color ShopColor

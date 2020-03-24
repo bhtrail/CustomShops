@@ -15,6 +15,7 @@ namespace CustomShops.Shops
         public override string Name => "BlackMarket";
         public override string TabText => "Black Market";
         public override string HeaderText => "Black Market";
+        public override string ShopPanelImage => SG_Stores_StoreImagePanel.BLACK_MARKET_ILLUSTRATION;
         public override Sprite Sprite => Control.State.BlacMarketSprite;
         public override Color IconColor => Color.magenta;
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.BlackMarketStoreColor.color;
@@ -27,6 +28,7 @@ namespace CustomShops.Shops
         public override bool RefreshOnOwnerChange => false;
         public override bool RefreshOnGameLoad => false;
         public override bool NeedSave => true;
+
 
         public override void Initilize()
         {

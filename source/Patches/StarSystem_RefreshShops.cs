@@ -22,6 +22,10 @@ namespace CustomShops.Patches
                 try
                 {
                     shop.RefreshShop();
+                    if (shop is IDefaultShop def_shop)
+                    {
+                        Control.LogDebug($"-- total {def_shop.ShopToUse.ActiveInventory.Count} items");
+                    }
                 }
                 catch (Exception e)
                 {
