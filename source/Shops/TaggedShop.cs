@@ -50,8 +50,28 @@ namespace CustomShops
 #endif
             ShopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
             ShopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
+            if (Shop.ItemCollections == null)
+                ShopT.Property<List<ItemCollectionDef>>("ItemCollections").Value = new List<ItemCollectionDef>();
+            else
+                Shop.ItemCollections.Clear();
 
-            Shop.Initialize(Tags, Shop.ShopType.System);
+            foreach (var item in Tags)
+            {
+                try
+                {
+                    var col = Control.State.Sim.DataManager.ItemCollectionDefs.Get(item);
+                    if (col == null)
+                    {
+                        Control.LogError("Cannot retrive ItemCollection " + item + ", skipping");
+                        continue;
+                    }
+                    Shop.ItemCollections.Add(col);
+                }
+                catch (Exception e)
+                {
+                    Control.LogError("Cannot retrive ItemCollection " + item + ", skipping", e);
+                }
+            }
         }
 
 
@@ -61,7 +81,7 @@ namespace CustomShops
             Shop.RefreshShop();
         }
 
-        public virtual Shop GetShopToSave() { return Shop;  }
+        public virtual Shop GetShopToSave() { return Shop; }
         public virtual void SetLoadedShop(Shop shop)
         {
             Shop = shop;
