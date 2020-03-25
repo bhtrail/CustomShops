@@ -12,7 +12,6 @@ namespace CustomShops
     {
         string Name { get; }
         string TabText { get; }
-        string HeaderText { get; }
         string ShopPanelImage { get; }
         public Color IconColor { get; }
         public Color ShopColor { get; }

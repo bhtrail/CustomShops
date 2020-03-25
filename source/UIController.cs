@@ -149,7 +149,6 @@ namespace CustomShops
             {
                 SwitchAndInit(shop);
                 RefreshColors(shop);
-                UpdateHeader(shop);
                 FillInData(shop);
             }
             catch (Exception e)
@@ -187,27 +186,6 @@ namespace CustomShops
                 ShopHelper.FillInWithFaction(shop);
             }
 
-        }
-
-        private static void UpdateHeader(IShopDescriptor shop)
-        {
-            Control.LogDebug($"- update header");
-            if (shop == null)
-                return;
-
-            ShopHelper.StoreHeaderText.SetText(shop.HeaderText);
-
-            if (shop is ISpriteIcon spr_icon)
-                ShopHelper.SetHeaderImageSpriteBySprite(spr_icon.Sprite);
-            else if (shop is ITextIcon txt_icon)
-                Control.State.Sim.RequestItem<Sprite>(
-                    txt_icon.SpriteID,
-                    delegate (Sprite sprite) { ShopHelper.SetHeaderImageSpriteBySprite(sprite); },
-                    BattleTechResourceType.Sprite
-                    );
-
-            
-            ShopHelper.StoreHeaderImageColor.OverrideWithColor(shop.IconColor);
         }
     }
 }

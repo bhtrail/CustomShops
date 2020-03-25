@@ -36,7 +36,7 @@ namespace CustomShops.Patches
                         Control.LogDebug("-- " + shop.Name + " Loaded");
                         Control.LogDebug($"-- total {Shop.ActiveInventory.Count} items");
                     }
-                    catch (Exception e)
+                    catch (Exception )
                     {
                         Control.LogError($"Error finding {name} Create new");
                         shop.RefreshShop();
