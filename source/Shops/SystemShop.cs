@@ -44,10 +44,9 @@ namespace CustomShops.Shops
         public override bool RefreshOnOwnerChange => true;
 
 
-        public override void Initilize()
+        protected override void UpdateTags()
         {
             Tags = Control.State.CurrentSystem.Def.SystemShopItems;
-            base.Initilize();
         }
 
         public override void SetLoadedShop(Shop shop)

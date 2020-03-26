@@ -53,19 +53,19 @@ namespace CustomShops
         {
             try
             {
-                Control.LogDebug($"-- FillInWithFaction");
+                Control.LogDebug(DInfo.ShopInterface, $"-- FillInWithFaction");
                 var faction = (shop as IFillWidgetFromFaction).RelatedFaction;
                 if (faction == null)
                     faction = FactionEnumeration.GetInvalidUnsetFactionValue();
-                Control.LogDebug($"--- Faction: {faction.Name}");
+                Control.LogDebug(DInfo.ShopInterface, $"--- Faction: {faction.Name}");
 
                 string id = shop.ShopPanelImage;
-                Control.LogDebug($"--- request panel image id:{id}");
+                Control.LogDebug(DInfo.ShopInterface, $"--- request panel image id:{id}");
                 Control.State.Sim.RequestItem<Sprite>(id, sprite => 
                 {
-                    Control.LogDebug($"Received panel image");
+                    Control.LogDebug(DInfo.ShopInterface, $"Received panel image");
                     StoreImage.sprite = sprite;
-                    Control.LogDebug($"- set");
+                    Control.LogDebug(DInfo.ShopInterface, $"- set");
                 }, BattleTechResourceType.Sprite);
                 miniFactionWidget.FillInData(faction);
                 CurrSystemText.SetText(Control.State.CurrentSystem.Name);

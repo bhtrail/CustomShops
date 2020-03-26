@@ -20,17 +20,17 @@ namespace CustomShops
 
         internal static void InitShopWindow(SG_Shop_Screen shop_screen)
         {
-            Control.LogDebug("Enter Shop Screen");
+            Control.LogDebug(DInfo.ShopInterface, "Enter Shop Screen");
             if (shop_screen != ShopScreen)
                 SetupButtons(shop_screen);
 
             StoreButton active = null;
-            Control.LogDebug("- SetupButtons");
+            Control.LogDebug(DInfo.ShopInterface, "- SetupButtons");
             foreach (var button in Buttons.Values)
             {
                 var shop = button.Shop;
-                Control.LogDebug($"-- [{shop.Name}]");
-                Control.LogDebug($"--- Exists:{shop.Exists} CanUse:{shop.CanUse}");
+                Control.LogDebug(DInfo.ShopInterface, $"-- [{shop.Name}]");
+                Control.LogDebug(DInfo.ShopInterface, $"--- Exists:{shop.Exists} CanUse:{shop.CanUse}");
 
                 if (shop.Exists)
                 {
@@ -83,7 +83,7 @@ namespace CustomShops
         {
             try
             {
-                Control.LogDebug("- First Time enter. Start to setup");
+                Control.LogDebug(DInfo.ShopInterface, "- First Time enter. Start to setup");
                 ShopScreen = shop_screen;
                 ShopHelper = new ShopScreenHelper(ShopScreen);
                 Buttons = new Dictionary<string, StoreButton>();
@@ -92,15 +92,15 @@ namespace CustomShops
                 var store_button = ShopHelper.SystemStoreButtonHoldingObject;
                 var radio_set = ShopHelper.SystemStoreButtonHoldingObject.transform.parent.GetComponent<HBSRadioSet>();
 
-                Control.LogDebug("-- Create buttons");
+                Control.LogDebug(DInfo.ShopInterface, "-- Create buttons");
                 foreach (var shop in Control.Shops)
                 {
 
-                    Control.LogDebug($"--- {shop.Name}");
+                    Control.LogDebug(DInfo.ShopInterface, $"--- {shop.Name}");
                     var button = new StoreButton(store_button, shop);
                     Buttons.Add(shop.Name, button);
                 }
-                Control.LogDebug("-- Get default icons");
+                Control.LogDebug(DInfo.ShopInterface, "-- Get default icons");
                 Control.State.SystemShopSprite = ShopHelper.SystemStoreButtonHoldingObject.transform.GetChild(0)
                     .Find("tab_icon").GetComponent<Image>().sprite;
                 ShopHelper.SimGame.RequestItem<Sprite>(SG_Shop_Screen.BLACKMARKET_ICON,
@@ -108,12 +108,12 @@ namespace CustomShops
                     BattleTechResourceType.Sprite);
 
 
-                Control.LogDebug("-- Hide original buttons");
+                Control.LogDebug(DInfo.ShopInterface, "-- Hide original buttons");
                 ShopHelper.SystemStoreButtonHoldingObject.SetActive(false);
                 ShopHelper.FactionStoreButtonHoldingObject.SetActive(false);
                 ShopHelper.BlackMarketStoreButtonHoldingObject.SetActive(false);
 
-                Control.LogDebug("-- Setup radio set");
+                Control.LogDebug(DInfo.ShopInterface, "-- Setup radio set");
                 radio_set.ClearRadioButtons();
                 foreach (var pair in Buttons)
                     radio_set.AddButtonToRadioSet(pair.Value.Button);
@@ -123,7 +123,7 @@ namespace CustomShops
             {
                 Control.LogError(e);
             }
-            Control.LogDebug("-- done!");
+            Control.LogDebug(DInfo.ShopInterface, "-- done!");
 
         }
 
@@ -142,7 +142,7 @@ namespace CustomShops
 
         internal static void TabSelected(IShopDescriptor shop)
         {
-            Control.LogDebug($"Pressed {shop.Name}");
+            Control.LogDebug(DInfo.TabSwitch, $"Pressed {shop.Name}");
             ActiveShop = shop;
 
             try
@@ -159,13 +159,13 @@ namespace CustomShops
 
         private static void SwitchAndInit(IShopDescriptor shop)
         {
-            Control.LogDebug($"- fill shop");
+            Control.LogDebug(DInfo.TabSwitch, $"- fill shop");
             if (shop == null)
                 return;
 
             if (shop is IDefaultShop def_shop)
             {
-                Control.LogDebug($"-- IDefaultShop");
+                Control.LogDebug(DInfo.TabSwitch, $"-- IDefaultShop");
                 ShopScreen.ChangeToBuy(def_shop.ShopToUse, true);
             }
             else
@@ -176,13 +176,13 @@ namespace CustomShops
 
         private static void FillInData(IShopDescriptor shop)
         {
-            Control.LogDebug($"- fill data");
+            Control.LogDebug(DInfo.ShopInterface, $"- fill data");
             if (shop == null)
                 return;
 
             if (shop is IFillWidgetFromFaction fill_shop)
             {
-                Control.LogDebug($"-- IFillWidgetFromFaction");
+                Control.LogDebug(DInfo.ShopInterface, $"-- IFillWidgetFromFaction");
                 ShopHelper.FillInWithFaction(shop);
             }
 

@@ -81,7 +81,7 @@ namespace CustomShops
         {
             if (shop != null)
             {
-                LogDebug($"Shop [{shop.Name}] registred");
+                Log($"Shop [{shop.Name}] registred");
                 Shops.Add(shop);
                 if (shop.RefreshOnMonthChange)
                     OnMonthChange.Add(shop);
@@ -94,14 +94,16 @@ namespace CustomShops
 
         #region LOGGING
         [Conditional("CCDEBUG")]
-        public static void LogDebug(string message)
+        public static void LogDebug(DInfo type, string message)
         {
-            Logger.LogDebug(LogPrefix + message);
+            if (Settings.DebugType.HasFlag(type))
+                Logger.LogDebug(LogPrefix + message);
         }
         [Conditional("CCDEBUG")]
-        public static void LogDebug(string message, Exception e)
+        public static void LogDebug(DInfo type, string message, Exception e)
         {
-            Logger.LogDebug(LogPrefix + message, e);
+            if (Settings.DebugType.HasFlag(type))
+                Logger.LogDebug(LogPrefix + message, e);
         }
 
         public static void LogError(string message)

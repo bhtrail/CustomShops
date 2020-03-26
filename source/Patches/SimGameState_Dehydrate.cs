@@ -16,21 +16,21 @@ namespace CustomShops.Patches
         [HarmonyPostfix]
         public static void SaveShops(SerializableReferenceContainer references)
         {
-            Control.LogDebug("Saving Shops");
+            Control.LogDebug(DInfo.SaveLoad, "Saving Shops");
             foreach (var shop in Control.Shops)
             {
                 if (shop is ISaveShop save)
                 {
-                    Control.LogDebug("- " + shop.Name);
+                    Control.LogDebug(DInfo.SaveLoad, "- " + shop.Name);
                     var shop_to_save = save.GetShopToSave();
                     if (shop_to_save != null)
                     {
                         references.AddItem<Shop>("Shop" + shop.Name, shop_to_save);
-                        Control.LogDebug("-- Saved as Shop" + shop.Name);
+                        Control.LogDebug(DInfo.SaveLoad, "-- Saved as Shop" + shop.Name);
                     }
                     else
                     {
-                        Control.LogDebug("-- no shop to save");
+                        Control.LogDebug(DInfo.SaveLoad, "-- no shop to save");
                     }
                 }
             }

@@ -14,10 +14,24 @@ namespace CustomShops
         public float Mul { get; set; }
     }
 
+    [Flags]
+    public enum DInfo 
+    {
+        NONE = 0,
+        ShopInterface = 1,
+        ShowItemList = 2,
+        DetailDebug = 4,
+        SaveLoad = 8,
+        RefreshShop = 16,
+        TabSwitch = 32,
+        ALL = 0xffff
+    }
+
     public class CustomShopsSettings
     {
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
+        public DInfo DebugType { get; set; } = DInfo.ALL;
 
         public bool SystemShop { get; set; } = true;
         public bool FactionShop { get; set; } = true;

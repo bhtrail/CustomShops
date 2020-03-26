@@ -31,7 +31,9 @@ namespace CustomShops
         public abstract bool RefreshOnMonthChange { get; }
         public abstract bool RefreshOnOwnerChange { get; }
 
-        public virtual void Initilize()
+        protected abstract void UpdateTags();
+
+        private void Initilize()
         {
             if (Shop == null)
             {
@@ -43,10 +45,10 @@ namespace CustomShops
             if (Tags != null)
                 foreach (var item in Tags)
                 {
-                    Control.LogDebug("-- " + item);
+                    Control.LogDebug(DInfo.RefreshShop, "-- " + item);
                 }
             else
-                Control.LogDebug("-- Empty");
+                Control.LogDebug(DInfo.RefreshShop, "-- Empty");
 #endif
             ShopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
             ShopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
@@ -74,9 +76,9 @@ namespace CustomShops
             }
         }
 
-
         public void RefreshShop()
         {
+            UpdateTags();
             Initilize();
             Shop.RefreshShop();
         }

@@ -71,10 +71,9 @@ namespace CustomShops.Shops
 
 
 
-        public override void Initilize()
+        protected override void UpdateTags()
         {
             Tags = Control.State.CurrentSystem.Def.FactionShopItems;
-            base.Initilize();
         }
         public override void SetLoadedShop(Shop shop)
         {

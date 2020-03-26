@@ -16,7 +16,7 @@ namespace CustomShops.DEBUG_Patches
 
         public static void Prefix()
         {
-            Control.LogDebug("ChangeToBuy");
+            Control.LogDebug(DInfo.DetailDebug, "ChangeToBuy");
         }
     }
 
@@ -27,7 +27,7 @@ namespace CustomShops.DEBUG_Patches
 
         public static void Prefix(Shop shop)
         {
-            Control.LogDebug($"AddShopInventory Prefix - {shop.ActiveInventory.Count} items");
+            Control.LogDebug(DInfo.DetailDebug, $"AddShopInventory Prefix - {shop.ActiveInventory.Count} items");
         }
     }
 
@@ -38,7 +38,7 @@ namespace CustomShops.DEBUG_Patches
 
         public static void Prefix(ShopDefItem itemDef)
         {
-            Control.LogDebug($"AddShopItemToWidget - {itemDef.GUID}");
+            Control.LogDebug(DInfo.DetailDebug, $"AddShopItemToWidget - {itemDef.GUID}");
         }
     }
 }

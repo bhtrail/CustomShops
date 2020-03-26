@@ -21,26 +21,26 @@ namespace CustomShops.Patches
             Control.State.Sim = __instance;
 
             SerializableReferenceContainer globalReferences = gameInstanceSave.GlobalReferences;
-            Control.LogDebug("Loading Shops");
+            Control.LogDebug(DInfo.SaveLoad, "Loading Shops");
             foreach (var shop in Control.Shops)
             {
                 if (shop is ISaveShop save)
                 {
                     var name = "Shop" + shop.Name;
-                    Control.LogDebug("- " + shop.Name);
+                    Control.LogDebug(DInfo.SaveLoad, "- " + shop.Name);
                     try
                     {
                         var Shop = globalReferences.GetItem<Shop>(name);
                         save.SetLoadedShop(Shop);
 
-                        Control.LogDebug("-- " + shop.Name + " Loaded");
-                        Control.LogDebug($"-- total {Shop.ActiveInventory.Count} items");
+                        Control.LogDebug(DInfo.SaveLoad, "-- " + shop.Name + " Loaded");
+                        Control.LogDebug(DInfo.SaveLoad, $"-- total {Shop.ActiveInventory.Count} items");
                     }
                     catch (Exception )
                     {
                         Control.LogError($"Error finding {name} Create new");
                         shop.RefreshShop();
-                        Control.LogDebug("-- total " + save.GetShopToSave().ActiveInventory.Count + " items");
+                        Control.LogDebug(DInfo.SaveLoad, "-- total " + save.GetShopToSave().ActiveInventory.Count + " items");
                     }
                 }
                 else

@@ -15,16 +15,16 @@ namespace CustomShops.Patches
         [HarmonyPrefix]
         public static bool RefreshShops()
         {
-            Control.LogDebug($"Refreshing Shops OnSystemChange {Control.State.CurrentSystem.Def.Description.Name}");
+            Control.LogDebug(DInfo.RefreshShop, $"Refreshing Shops OnSystemChange {Control.State.CurrentSystem.Def.Description.Name}");
             foreach (var shop in Control.OnSystemChange)
             {
-                Control.LogDebug($"- [{shop.Name}]");
+                Control.LogDebug(DInfo.RefreshShop, $"- [{shop.Name}]");
                 try
                 {
                     shop.RefreshShop();
                     if (shop is IDefaultShop def_shop)
                     {
-                        Control.LogDebug($"-- total {def_shop.ShopToUse.ActiveInventory.Count} items");
+                        Control.LogDebug(DInfo.RefreshShop, $"-- total {def_shop.ShopToUse.ActiveInventory.Count} items");
                     }
                 }
                 catch (Exception e)
