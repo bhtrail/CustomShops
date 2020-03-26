@@ -24,6 +24,7 @@ namespace CustomShops
         SaveLoad = 8,
         RefreshShop = 16,
         TabSwitch = 32,
+        ShopActions = 64,
         ALL = 0xffff
     }
 
@@ -31,10 +32,16 @@ namespace CustomShops
     {
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
-        public DInfo DebugType { get; set; } = DInfo.ALL;
+        public DInfo DebugType= DInfo.ALL;
 
-        public bool SystemShop { get; set; } = true;
-        public bool FactionShop { get; set; } = true;
-        public bool BlackMarketShop { get; set; } = true;
+        public bool SystemShop  = true;
+        public bool FactionShop  = true;
+        public bool BlackMarketShop  = true;
+
+        public bool AllowMultiSell = true;
+        public bool AllowMultiBuy = true;
+
+        public bool ShowConfirm = true;
+        public int ConfirmLowLimit = 100000;
     }
 }

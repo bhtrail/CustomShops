@@ -31,6 +31,32 @@ namespace CustomShops
         private SG_Stores_MiniFactionWidget miniFactionWidget;
         private HBSTooltip PlanetToolitp;
 
+        public HBSDOTweenButton BuyButton { get; private set; }
+        public HBSDOTweenToggle BuyTabButton { get; private set; }
+        public HBSDOTweenToggle SellTabButton { get; private set; }
+        public MechLabInventoryWidget_ListView inventoryWidget { get; private set; }
+
+        public bool isInBuyingState { get; private set; }
+        private Traverse<InventoryDataObject_SHOP> T_selectedController;
+        public InventoryDataObject_SHOP selectedController 
+        {
+            get => T_selectedController.Value;
+            set => T_selectedController.Value = value;
+        }
+        private Traverse<bool> T_canPlayVO;
+        public bool canPlayVO 
+        {
+            get => T_canPlayVO.Value;
+            set => T_canPlayVO.Value = value;
+        }
+        private Traverse<bool> T_triggerIronManAutoSave;
+        public bool triggerIronManAutoSave
+        {
+            get => T_triggerIronManAutoSave.Value;
+            set => T_triggerIronManAutoSave.Value = value;
+        }
+
+
         public ShopScreenHelper(SG_Shop_Screen screen)
         {
             Screen = screen;
@@ -48,7 +74,17 @@ namespace CustomShops
             CurrSystemText = StoreImagePanel.Field<LocalizableText>("CurrSystemText").Value;
             StoreImage = StoreImagePanel.Field<Image>("StoreImage").Value;
             PlanetToolitp = StoreImagePanel.Field<HBSTooltip>("PlanetToolitp").Value;
+            isInBuyingState = Main.Field<HBSDOTweenButton>("BuyButton").Value;
+            isInBuyingState = Main.Field<bool>("isInBuyingState").Value;
+            T_selectedController = Main.Field<InventoryDataObject_SHOP>("selectedController");
+            T_canPlayVO = Main.Field<bool>("canPlayVO");
+            T_triggerIronManAutoSave = Main.Field<bool>("triggerIronManAutoSave");
+
+            BuyTabButton = Main.Field<HBSDOTweenToggle>("BuyTabButton").Value;
+            SellTabButton = Main.Field<HBSDOTweenToggle>("SellTabButton").Value;
+            inventoryWidget = Main.Field<MechLabInventoryWidget_ListView>("inventoryWidget").Value;
         }
+
         public void FillInWithFaction(IShopDescriptor shop)
         {
             try
@@ -61,7 +97,7 @@ namespace CustomShops
 
                 string id = shop.ShopPanelImage;
                 Control.LogDebug(DInfo.ShopInterface, $"--- request panel image id:{id}");
-                Control.State.Sim.RequestItem<Sprite>(id, sprite => 
+                Control.State.Sim.RequestItem<Sprite>(id, sprite =>
                 {
                     Control.LogDebug(DInfo.ShopInterface, $"Received panel image");
                     StoreImage.sprite = sprite;

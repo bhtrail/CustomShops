@@ -47,6 +47,9 @@
       <HintPath>..\..\..\BattleTech_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="InControl">
+      <HintPath>..\..\..\BattleTech_Data\Managed\InControl.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\BattleTech_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
@@ -107,6 +110,7 @@
     <Compile Include="Interfaces\IShopDescriptor.cs" />
     <Compile Include="Patches\SG_Shop_Screen_RefreshColorAreas.cs" />
     <Compile Include="Patches\SG_Shop_Screen_BeginShop.cs" />
+    <Compile Include="Patches\SG_Stores_MultiPurchasePopup_Patches.cs" />
     <Compile Include="Patches\SimGameState_Dehydrate.cs" />
     <Compile Include="Patches\SimGameState_Init.cs" />
     <Compile Include="Patches\SimGameState_Rehydrate.cs" />
