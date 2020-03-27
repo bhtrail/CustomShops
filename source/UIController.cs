@@ -161,6 +161,82 @@ namespace CustomShops
 
         private static void ProcessSell(InventoryDataObject_SHOP selected)
         {
+            if (selected == null)
+                return;
+
+            var price = selected.GetCBillValue();
+            if (selected.quantity == 1 || !Control.Settings.AllowMultiSell)
+            {
+                if (Control.Settings.ShowConfirm && price > Control.Settings.ConfirmLowLimit)
+                {
+                    GenericPopupBuilder.Create("Confirm?",$"Sell {selected.GetName()} for {price}?")
+                        .AddButton("Cancel", null, true, null)
+                        .AddButton("Accept", () => OnSellItems(1), true, null)
+                        .CancelOnEscape()
+                        .AddFader(new UIColorRef?(LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.PopupBackfill), 0f, true)
+                        .Render();
+                }
+                else
+                {
+                    OnSellItems(1);
+                }
+            }
+            else
+            {
+                SG_Stores_MultiPurchasePopup_Handler.StartDialog("Sell", selected.shopDefItem,
+                        selected.GetName(), selected.quantity, price, OnSellItems, null);
+            }
+        }
+        private static void OnSellItems(int num)
+        {
+            var selected = ShopHelper.selectedController;
+            var shop_def = selected.shopDefItem;
+            if (selected.quantity < num)
+                num = selected.quantity;
+            if (num <= 0)
+                return;
+            if (SellItem(shop_def, num))
+            {
+                SimGamePurchaseMessage message = new SimGamePurchaseMessage(shop_def, shop_def.SellCost, SimGamePurchaseMessage.TransactionType.Sell);
+                Control.State.Sim.MessageCenter.PublishMessage(message);
+                selected.ModifyQuantity(num);
+                if (selected.quantity <= 0)
+                {
+                    ShopHelper.inventoryWidget.RemoveDataItem(selected);
+                    selected.Pool();
+                    ShopHelper.selectedController = null;
+                }
+                ShopHelper.inventoryWidget.RefreshInventoryList();
+                ShopScreen.UpdateMoneySpot();
+                ShopHelper.triggerIronManAutoSave = true;
+            }
+        }
+        private static bool SellItem(ShopDefItem item, int num)
+        {
+            int sell_cost = item.SellCost;
+            if (item.Type == ShopItemType.MechPart)
+            {
+                return false;
+            }
+            Type type2;
+            if (item.Type == ShopItemType.Mech || item.Type == ShopItemType.Chassis_DEPRECATED)
+            {
+                type2 = typeof(MechDef);
+            }
+            else
+            {
+                type2 = SimGameState.GetTypeFromComponent(Shop.ShopItemTypeToComponentType(item.Type));
+            }
+            var avaliable = Control.State.Sim.GetItemCount(item.ID, type2,
+                item.IsDamaged ? SimGameState.ItemCountType.DAMAGED_ONLY : SimGameState.ItemCountType.UNDAMAGED_ONLY);
+            if (avaliable < num)
+                num = avaliable;
+            if (num == 0)
+                return false;
+            for (int i = 0; i < num; i++)
+                Control.State.Sim.RemoveItemStat(item.ID, type2, item.IsDamaged);
+            Control.State.Sim.AddFunds(sell_cost * num, "Store", true, true);
+            return true;
         }
 
         private static void ProcessBuy(InventoryDataObject_SHOP selected)
@@ -197,22 +273,22 @@ namespace CustomShops
                 {
                     if (Control.Settings.ShowConfirm && price >= Control.Settings.ConfirmLowLimit)
                     {
-                        GenericPopupBuilder.Create("Confirm?", $"Purchase for {price}?")
+                        GenericPopupBuilder.Create("Confirm?", $"Purchase {selected.GetName()} for {price}?")
                             .AddButton("Cancel", null, true, null)
-                            .AddButton("Accept", new Action(ShopScreen.BuyCurrentSelection), true, null)
+                            .AddButton("Accept", () => OnBuyItem(1), true, null)
                             .CancelOnEscape()
                             .AddFader(new UIColorRef?(LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.PopupBackfill), 0f, true)
                             .Render();
                     }
                     else
                     {
-                        ShopScreen.BuyCurrentSelection();
+                        OnBuyItem(1);
                     }
                 }
                 else
                 {
                     SG_Stores_MultiPurchasePopup_Handler.StartDialog("Buy", selected.shopDefItem,
-                        selected.GetName(), max_to_buy, price, OnBuyMultipleItems, null);
+                        selected.GetName(), max_to_buy, price, OnBuyItem, null);
                 }
             }
             else
@@ -220,8 +296,7 @@ namespace CustomShops
                 Control.LogError("- unknown type of shop, return");
             }
         }
-
-        private static void OnBuyMultipleItems(int num)
+        private static void OnBuyItem(int num)
         {
             var selected = ShopHelper.selectedController;
             var shop_def = selected.shopDefItem;
@@ -238,30 +313,19 @@ namespace CustomShops
                 Control.LogDebug(DInfo.ShopActions, $"--- {num} > {selected.quantity}, adjucting");
                 num = selected.quantity;
             }
-            if (shop_def.IsInfinite)
-            {
-                for (int i = 0; i < num; i++)
-                    selected.GetShop().Purchase(id, Shop.PurchaseType.Normal, selected.shopDefItem.Type);
-            }
-            else if (selected.quantity == num)
-            {
-                for (int i = 0; i < num; i++)
-                    selected.GetShop().Purchase(id, Shop.PurchaseType.Special, selected.shopDefItem.Type);
+            BuyItem(shop_def, num);
 
-                ShopHelper.inventoryWidget.RemoveDataItem(selected);
-                if (selected != null)
+            if (!shop_def.IsInfinite)
+                if (num < selected.quantity)
+                    selected.ModifyQuantity(-num);
+                else
                 {
-                    selected.Pool();
+
+                    ShopHelper.inventoryWidget.RemoveDataItem(selected);
+                    if (selected != null)
+                        selected.Pool();
+                    ShopHelper.selectedController = null;
                 }
-                ShopHelper.selectedController = null;
-                ShopHelper.inventoryWidget.RefreshInventoryList();
-            }
-            else
-            {
-                for (int i = 0; i < num; i++)
-                    selected.GetShop().Purchase(id, Shop.PurchaseType.Special, selected.shopDefItem.Type);
-                selected.ModifyQuantity(-num);
-            }
             ShopHelper.inventoryWidget.RefreshInventoryList();
 
             if (ShopHelper.canPlayVO)
@@ -298,6 +362,19 @@ namespace CustomShops
                 ShopScreen.OnItemSelected(ShopHelper.inventoryWidget.GetSelectedViewItem());
             }
             ShopHelper.triggerIronManAutoSave = true;
+        }
+        private static void BuyItem(ShopDefItem item, int quantity)
+        {
+            if (ActiveShop is IDefaultShop def_shop)
+            {
+                var shop = def_shop.ShopToUse;
+                for (int i = 0; i < quantity; i++)
+                    shop.Purchase(item.ID, item.IsInfinite ? Shop.PurchaseType.Normal : Shop.PurchaseType.Special, item.Type);
+            }
+            else
+            {
+                Control.LogError("- unknown type of shop, return");
+            }
         }
 
         private static IEnumerator PurchaseVOCooldown(float duration)

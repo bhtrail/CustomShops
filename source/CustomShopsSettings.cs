@@ -37,6 +37,7 @@ namespace CustomShops
         public bool SystemShop  = true;
         public bool FactionShop  = true;
         public bool BlackMarketShop  = true;
+        public bool BuyBackShop = true;
 
         public bool AllowMultiSell = true;
         public bool AllowMultiBuy = true;

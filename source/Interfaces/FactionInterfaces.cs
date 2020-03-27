@@ -18,4 +18,17 @@ namespace CustomShops
     public interface IDiscountFromFaction : IRelatedFaction
     {
     }
+
+    public interface ICustomDiscount
+    {
+    }
+
+    public interface INoDiscount
+    { 
+    }
+
+    public interface ICustomFillWidget
+    {
+        void FillFactionWidget(MiniFactionPanelHelper helper);
+    }
 }
