@@ -35,6 +35,10 @@ namespace CustomShops
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
         public DInfo DebugType= DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch | DInfo.ShopActions | DInfo.BuyBack | DInfo.TypedItemDef;
+        public bool DEBUG_FactionShopAlwaysAvaliable = false;
+        public bool DEBUG_BlackMarketAlwaysAvaliable = false;
+
+
 
         public bool SystemShop  = true;
         public bool FactionShop  = true;
@@ -47,5 +51,7 @@ namespace CustomShops
         public bool ShowConfirm = true;
         public int ConfirmLowLimit = 100000;
         public float FactionShopAdjustment = -0.25f;
+
+
     }
 }

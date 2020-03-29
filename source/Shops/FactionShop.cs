@@ -14,7 +14,7 @@ namespace CustomShops.Shops
         {
             get
             {
-                if(RelatedFaction == null)
+                if (RelatedFaction == null)
                     return SG_Stores_StoreImagePanel.BLACK_MARKET_ILLUSTRATION;
 
                 return string.IsNullOrEmpty(RelatedFaction.FactionDef.storePanelImage) ?
@@ -64,7 +64,7 @@ namespace CustomShops.Shops
         public FactionValue RelatedFaction => Control.State.CurrentSystem.Def.FactionShopOwnerValue;
 
         public override bool Exists => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.FactionShopItems != null;
-        public override bool CanUse => true; //Control.State.CurrentSystem == null ? false : Control.State.Sim.IsFactionAlly(Control.State.CurrentSystem.Def.FactionShopOwnerValue);
+        public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (Control.State.CurrentSystem == null ? false : Control.State.Sim.IsFactionAlly(Control.State.CurrentSystem.Def.FactionShopOwnerValue));
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => true;
@@ -81,7 +81,7 @@ namespace CustomShops.Shops
             base.SetLoadedShop(shop);
         }
 
-        public float GetDiscount()  
+        public float GetDiscount()
         {
             return 1 + Control.Settings.FactionShopAdjustment;
         }

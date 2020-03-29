@@ -21,8 +21,8 @@ namespace CustomShops.Shops
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.BlackMarketStoreColor.color;
         public FactionValue RelatedFaction => FactionEnumeration.GetAuriganPiratesFactionValue();
 
-        public override bool Exists =>  Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.BlackMarketShopItems != null;
-        public override bool CanUse => true; // Control.State.CurrentSystem == null ? false : Control.State.Sim.CompanyTags.Contains(Control.State.Sim.Constants.Story.BlackMarketTag);
+        public override bool Exists => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.BlackMarketShopItems != null;
+        public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (Control.State.CurrentSystem == null ? false : Control.State.Sim.CompanyTags.Contains(Control.State.Sim.Constants.Story.BlackMarketTag));
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => false;
