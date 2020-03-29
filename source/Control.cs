@@ -31,7 +31,7 @@ namespace CustomShops
         internal static List<IShopDescriptor> OnMonthChange = new List<IShopDescriptor>();
         internal static List<IShopDescriptor> OnOwnerChange = new List<IShopDescriptor>();
 
-        public static BuyBackShop BayBack { get; private set; }
+        public static BuyBackShop BuyBack { get; private set; }
         public static void Init(string directory, string settingsJSON)
         {
             Logger = HBS.Logging.Logger.GetLogger(ModName, LogLevel.Debug);
@@ -71,8 +71,8 @@ namespace CustomShops
                     RegisterShop(new BlackMarketShop());
                 if (Settings.BuyBackShop)
                 {
-                    BayBack = new BuyBackShop();
-                    RegisterShop(BayBack);
+                    BuyBack = new BuyBackShop();
+                    RegisterShop(BuyBack);
                 }
 
             }

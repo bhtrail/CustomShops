@@ -5,7 +5,7 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops
 {
-    public class FactionShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ISpriteIcon
+    public class FactionShop : TaggedShop, ICustomDiscount, IFillWidgetFromFaction, ISaveShop, ISpriteIcon, IDefaultPrice
     {
         public override string Name => "Faction";
         public override string TabText => RelatedFaction == null ? "ERROR_FACTION" : RelatedFaction.Name;
@@ -81,5 +81,9 @@ namespace CustomShops.Shops
             base.SetLoadedShop(shop);
         }
 
+        public float GetDiscount()  
+        {
+            return 1 + Control.Settings.FactionShopAdjustment;
+        }
     }
 }

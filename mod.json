@@ -13,5 +13,9 @@
 	},	
 		
 	"Manifest": [
+		{
+		  "Type": "Sprite",
+		  "Path": "sprites"
+		}
 	]
 }

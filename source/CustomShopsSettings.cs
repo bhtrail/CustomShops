@@ -25,6 +25,8 @@ namespace CustomShops
         RefreshShop = 16,
         TabSwitch = 32,
         ShopActions = 64,
+        TypedItemDef = 128,
+        BuyBack = 256,
         ALL = 0xffff
     }
 
@@ -32,7 +34,7 @@ namespace CustomShops
     {
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
-        public DInfo DebugType= DInfo.ALL;
+        public DInfo DebugType= DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch | DInfo.ShopActions | DInfo.BuyBack | DInfo.TypedItemDef;
 
         public bool SystemShop  = true;
         public bool FactionShop  = true;
@@ -44,5 +46,6 @@ namespace CustomShops
 
         public bool ShowConfirm = true;
         public int ConfirmLowLimit = 100000;
+        public float FactionShopAdjustment = -0.25f;
     }
 }

@@ -36,7 +36,7 @@ namespace CustomShops.Patches
                         Control.LogDebug(DInfo.SaveLoad, "-- " + shop.Name + " Loaded");
                         Control.LogDebug(DInfo.SaveLoad, $"-- total {Shop.ActiveInventory.Count} items");
                     }
-                    catch (Exception )
+                    catch (Exception)
                     {
                         Control.LogError($"Error finding {name} Create new");
                         shop.RefreshShop();
@@ -46,6 +46,13 @@ namespace CustomShops.Patches
                 else
                     shop.RefreshShop();
             }
+
+            Control.Log($"Hated: {__instance.Constants.Story.HatedRepShopAdjustment}");
+            Control.Log($"Disliked: {__instance.Constants.Story.DislikedRepShopAdjustment}");
+            Control.Log($"Indifferent: {__instance.Constants.Story.IndifferentRepShopAdjustment}");
+            Control.Log($"Liked: {__instance.Constants.Story.LikedRepShopAdjustment}");
+            Control.Log($"Friendly: {__instance.Constants.Story.FriendlyRepShopAdjustment}");
+            Control.Log($"Honored: {__instance.Constants.Story.HonoredRepShopAdjustment}");
         }
     }
 }

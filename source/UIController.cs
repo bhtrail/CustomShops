@@ -114,6 +114,7 @@ namespace CustomShops
                 radio_set.defaultButton = Buttons.Values.First().Button;
 
                 Control.LogDebug(DInfo.ShopInterface, "-- Replace Buy/Sell buttons");
+
                 ShopHelper.BuyTabButton.OnClicked.RemoveAllListeners();
                 ShopHelper.SellTabButton.OnClicked.RemoveAllListeners();
                 ShopHelper.BuyButton.OnClicked.RemoveAllListeners();
@@ -162,14 +163,19 @@ namespace CustomShops
         private static void ProcessSell(InventoryDataObject_SHOP selected)
         {
             if (selected == null)
+            {
+                Control.LogDebug(DInfo.ShopActions, "-- nothing to sell, return");
+
                 return;
+            }
 
             var price = selected.GetCBillValue();
             if (selected.quantity == 1 || !Control.Settings.AllowMultiSell)
             {
+                Control.LogDebug(DInfo.ShopActions, $"-- selling 1x{selected.GetName()}");
                 if (Control.Settings.ShowConfirm && price > Control.Settings.ConfirmLowLimit)
                 {
-                    GenericPopupBuilder.Create("Confirm?",$"Sell {selected.GetName()} for {price}?")
+                    GenericPopupBuilder.Create("Confirm?", $"Sell {selected.GetName()} for {price}?")
                         .AddButton("Cancel", null, true, null)
                         .AddButton("Accept", () => OnSellItems(1), true, null)
                         .CancelOnEscape()
@@ -183,6 +189,7 @@ namespace CustomShops
             }
             else
             {
+                Control.LogDebug(DInfo.ShopActions, $"-- show multisell dialog");
                 SG_Stores_MultiPurchasePopup_Handler.StartDialog("Sell", selected.shopDefItem,
                         selected.GetName(), selected.quantity, price, OnSellItems, null);
             }
@@ -190,16 +197,29 @@ namespace CustomShops
         private static void OnSellItems(int num)
         {
             var selected = ShopHelper.selectedController;
+            Control.LogDebug(DInfo.ShopActions, $"-- OnSellItems {num}x{selected.GetName()}");
             var shop_def = selected.shopDefItem;
             if (selected.quantity < num)
                 num = selected.quantity;
             if (num <= 0)
-                return;
-            if (SellItem(shop_def, num))
             {
+                Control.LogDebug(DInfo.ShopActions, $"--- num<=0 return");
+                return;
+            }
+            int sold = SellItem(shop_def, num);
+
+            if (sold > 0)
+            {
+                if (Control.Settings.BuyBackShop)
+                {
+                    Control.LogDebug(DInfo.BuyBack, $"Addiing {shop_def.ID} to buy back shop");
+                    Control.BuyBack.AddItemToShop(shop_def, sold);
+                }
+
+                Control.LogDebug(DInfo.ShopActions, $"--- sold, process messages");
                 SimGamePurchaseMessage message = new SimGamePurchaseMessage(shop_def, shop_def.SellCost, SimGamePurchaseMessage.TransactionType.Sell);
                 Control.State.Sim.MessageCenter.PublishMessage(message);
-                selected.ModifyQuantity(num);
+                selected.ModifyQuantity(-num);
                 if (selected.quantity <= 0)
                 {
                     ShopHelper.inventoryWidget.RemoveDataItem(selected);
@@ -210,13 +230,17 @@ namespace CustomShops
                 ShopScreen.UpdateMoneySpot();
                 ShopHelper.triggerIronManAutoSave = true;
             }
+            else
+                Control.LogDebug(DInfo.ShopActions, $"--- not sold");
         }
-        private static bool SellItem(ShopDefItem item, int num)
+        private static int SellItem(ShopDefItem item, int num)
         {
+            Control.LogDebug(DInfo.ShopActions, $"--- SellItem {num}x{item.ID}");
             int sell_cost = item.SellCost;
             if (item.Type == ShopItemType.MechPart)
             {
-                return false;
+                Control.LogDebug(DInfo.ShopActions, $"---- mechpart - not sold");
+                return 0;
             }
             Type type2;
             if (item.Type == ShopItemType.Mech || item.Type == ShopItemType.Chassis_DEPRECATED)
@@ -229,14 +253,17 @@ namespace CustomShops
             }
             var avaliable = Control.State.Sim.GetItemCount(item.ID, type2,
                 item.IsDamaged ? SimGameState.ItemCountType.DAMAGED_ONLY : SimGameState.ItemCountType.UNDAMAGED_ONLY);
+            Control.LogDebug(DInfo.ShopActions, $"---- {type2}, avaliable: {avaliable}");
+
             if (avaliable < num)
                 num = avaliable;
             if (num == 0)
-                return false;
+                return 0;
             for (int i = 0; i < num; i++)
                 Control.State.Sim.RemoveItemStat(item.ID, type2, item.IsDamaged);
             Control.State.Sim.AddFunds(sell_cost * num, "Store", true, true);
-            return true;
+            Control.LogDebug(DInfo.ShopActions, $"---- done");
+            return num;
         }
 
         private static void ProcessBuy(InventoryDataObject_SHOP selected)
@@ -261,10 +288,10 @@ namespace CustomShops
                     Control.LogDebug(DInfo.ShopActions, "-- no shop, return");
                     return;
                 }
-                int price = shop.GetPrice(selected.shopDefItem, Shop.PurchaseType.Normal, Shop.ShopType.System);
+                int price = GetPrice_Transpliters.GetPrice(null, selected.shopDefItem, Shop.PurchaseType.Normal, Shop.ShopType.System);
                 var money = Control.State.Sim.Funds;
                 var max_to_buy = money / price;
-                if (max_to_buy > selected.quantity)
+                if (!selected.shopDefItem.IsInfinite && max_to_buy > selected.quantity)
                     max_to_buy = selected.quantity;
 
                 Control.LogDebug(DInfo.ShopActions, $"-- money:{money} price:{price} num:{selected.quantity} max:{max_to_buy}");
@@ -301,26 +328,28 @@ namespace CustomShops
             var selected = ShopHelper.selectedController;
             var shop_def = selected.shopDefItem;
 
+            Control.LogDebug(DInfo.ShopActions, $"-- {num}x{shop_def.ID}");
+
             if (selected == null)
             {
-                Control.LogError("MultiPurshase received null item, cancel");
+                Control.LogError("OnBuyItem null item, cancel");
                 return;
             }
             var id = selected.GetId();
-            Control.LogDebug(DInfo.ShopActions, $"-- MultiPurshase :{num}x{id}");
-            if (num > selected.quantity)
+            if (!shop_def.IsInfinite && num > selected.quantity)
             {
                 Control.LogDebug(DInfo.ShopActions, $"--- {num} > {selected.quantity}, adjucting");
                 num = selected.quantity;
             }
             BuyItem(shop_def, num);
 
+
+            Control.LogDebug(DInfo.ShopActions, $"--- refresh shop");
             if (!shop_def.IsInfinite)
                 if (num < selected.quantity)
                     selected.ModifyQuantity(-num);
                 else
                 {
-
                     ShopHelper.inventoryWidget.RemoveDataItem(selected);
                     if (selected != null)
                         selected.Pool();
@@ -328,6 +357,7 @@ namespace CustomShops
                 }
             ShopHelper.inventoryWidget.RefreshInventoryList();
 
+            Control.LogDebug(DInfo.ShopActions, $"--- PlayVO");
             if (ShopHelper.canPlayVO)
             {
                 ShopHelper.canPlayVO = false;
@@ -365,8 +395,11 @@ namespace CustomShops
         }
         private static void BuyItem(ShopDefItem item, int quantity)
         {
+            Control.LogDebug(DInfo.ShopActions, $"---  BuyItem");
+
             if (ActiveShop is IDefaultShop def_shop)
             {
+                Control.LogDebug(DInfo.ShopActions, $"---- IDefaultShop");
                 var shop = def_shop.ShopToUse;
                 for (int i = 0; i < quantity; i++)
                     shop.Purchase(item.ID, item.IsInfinite ? Shop.PurchaseType.Normal : Shop.PurchaseType.Special, item.Type);
@@ -375,6 +408,8 @@ namespace CustomShops
             {
                 Control.LogError("- unknown type of shop, return");
             }
+            Control.LogDebug(DInfo.ShopActions, $"---- done");
+
         }
 
         private static IEnumerator PurchaseVOCooldown(float duration)
@@ -386,14 +421,28 @@ namespace CustomShops
 
         private static void OnSellTabPress()
         {
-            Control.LogDebug(DInfo.ShopActions, "Switch To Sell");
-            ShopScreen.ChangeToSell();
+            try
+            {
+                Control.LogDebug(DInfo.ShopActions, "Switch To Sell");
+                ShopScreen.ChangeToSell();
+            }
+            catch (Exception e)
+            {
+                Control.LogError(e);
+            }
         }
 
         private static void OnBuyTabPress()
         {
-            Control.LogDebug(DInfo.ShopActions, "Switch To Buy");
-            TabSelected(ActiveShop);
+            try
+            {
+                Control.LogDebug(DInfo.ShopActions, "Switch To Buy");
+                TabSelected(ActiveShop);
+            }
+            catch (Exception e)
+            {
+                Control.LogError(e);
+            }
         }
 
         public static void RefreshColors(IShopDescriptor shop)
@@ -449,12 +498,7 @@ namespace CustomShops
             if (shop == null)
                 return;
 
-            if (shop is IFillWidgetFromFaction fill_shop)
-            {
-                Control.LogDebug(DInfo.ShopInterface, $"-- IFillWidgetFromFaction");
-                ShopHelper.FillInWithFaction(shop);
-            }
-
+            ShopHelper.FillInWidget(shop);
         }
     }
 }

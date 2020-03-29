@@ -101,7 +101,8 @@
   <ItemGroup>
     <Compile Include="Control.cs" />
     <Compile Include="CustomShopsSettings.cs" />
-    <Compile Include="DEBUG_Patches\SG_Shop_Screen_ChangeToBuy.cs" />
+    <Compile Include="Interfaces\IPriceInterfaces.cs" />
+    <Compile Include="Patches\SG_Shop_Screen_ReceiveButtonPress.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Interfaces\IconInterfaces.cs" />
     <Compile Include="Interfaces\IDefaultShop.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Patches\SG_Shop_Screen_RefreshColorAreas.cs" />
     <Compile Include="Patches\SG_Shop_Screen_BeginShop.cs" />
     <Compile Include="Patches\SG_Stores_MultiPurchasePopup_Patches.cs" />
+    <Compile Include="Patches\SH_Shop_Screen_AddShopItemToWidget.cs" />
     <Compile Include="Patches\SimGameState_Dehydrate.cs" />
     <Compile Include="Patches\SimGameState_Init.cs" />
     <Compile Include="Patches\SimGameState_Rehydrate.cs" />
@@ -127,6 +129,8 @@
     <Compile Include="Shops\SystemShop.cs" />
     <Compile Include="Shops\TaggedShop.cs" />
     <Compile Include="StoreButton.cs" />
+    <Compile Include="Transpliters\GetPrice_Transpliters.cs" />
+    <Compile Include="TypedShopDefItem.cs" />
     <Compile Include="UIController.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +138,8 @@
       <Link>mod.json</Link>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DEBUG_Patches\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

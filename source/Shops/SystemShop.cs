@@ -10,7 +10,7 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops
 {
-    public class SystemShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon
+    public class SystemShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon, IDefaultPrice
     {
         public override string Name => "System";
         public override string TabText => "System";
