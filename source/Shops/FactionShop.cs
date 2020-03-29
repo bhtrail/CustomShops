@@ -61,10 +61,10 @@ namespace CustomShops.Shops
                 return owner.FactionDef.GetFactionStoreColor(out var color) ? color : LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
             }
         }
-        public FactionValue RelatedFaction => Control.State.CurrentSystem.Def.FactionShopOwnerValue;
+        public virtual FactionValue RelatedFaction => Control.State.CurrentSystem.Def.FactionShopOwnerValue;
 
         public override bool Exists => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.FactionShopItems != null;
-        public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (Control.State.CurrentSystem == null ? false : Control.State.Sim.IsFactionAlly(Control.State.CurrentSystem.Def.FactionShopOwnerValue));
+        public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (RelatedFaction == null ? false : Control.State.Sim.IsFactionAlly(RelatedFaction));
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => true;
