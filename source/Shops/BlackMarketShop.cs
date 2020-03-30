@@ -19,7 +19,7 @@ namespace CustomShops.Shops
         public string SpriteID => SG_Shop_Screen.BLACKMARKET_ICON;
         public override Color IconColor => Color.magenta;
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.BlackMarketStoreColor.color;
-        public FactionValue RelatedFaction => FactionEnumeration.GetAuriganPiratesFactionValue();
+        public FactionValue RelatedFaction => FactionEnumeration.GetBlackMarketFactionValue();
 
         public override bool Exists => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.BlackMarketShopItems != null;
         public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (Control.State.CurrentSystem == null ? false : Control.State.Sim.CompanyTags.Contains(Control.State.Sim.Constants.Story.BlackMarketTag));
