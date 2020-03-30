@@ -42,7 +42,7 @@ namespace CustomShops
                         if (shop is ISpriteIcon spr_icon)
                         {
                             Control.LogDebug(DInfo.ShopInterface, $"--- sprite image - set");
-                            button.Button.SetImageAndText(spr_icon.Sprite, shop.Name);
+                            button.Button.SetImageAndText(spr_icon.Sprite, shop.TabText);
                             Control.LogDebug(DInfo.ShopInterface, $"--- set icon color to  r{shop.IconColor.r:0.00} g{shop.IconColor.g:0.00} b{shop.IconColor.b:0.00}");
                             button.Icon.color = shop.IconColor;
 
@@ -56,7 +56,7 @@ namespace CustomShops
                                (sprite) => 
                                {
                                    Control.LogDebug(DInfo.ShopInterface, $"--- button image {id} received ");
-                                   button.Button.SetImageAndText(sprite, shop.Name);
+                                   button.Button.SetImageAndText(sprite, shop.TabText);
                                    Control.LogDebug(DInfo.ShopInterface, $"--- set icon color to  r{shop.IconColor.r:0.00} g{shop.IconColor.g:0.00} b{shop.IconColor.b:0.00}");
                                    button.Icon.color = shop.IconColor;
                                    Control.LogDebug(DInfo.ShopInterface, $"--- set");
