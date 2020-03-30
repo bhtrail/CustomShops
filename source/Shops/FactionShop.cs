@@ -42,11 +42,11 @@ namespace CustomShops.Shops
             get
             {
                 if (!Exists)
-                    return LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
+                    return Color.white;// LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
                 var owner = Control.State.CurrentSystem.Def.FactionShopOwnerValue;
                 if (owner == null)
-                    return LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
-                return owner.FactionDef.GetFactionStoreColor(out var color) ? color : LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
+                    return Color.white; // LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
+                return Color.white; //owner.FactionDef.GetFactionStoreColor(out var color) ? color : LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
             }
         }
         public override Color ShopColor

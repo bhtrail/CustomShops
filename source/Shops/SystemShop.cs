@@ -32,7 +32,7 @@ namespace CustomShops.Shops
 
             }
         }
-        public override Color IconColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.SystemStoreColor.color;
+        public override Color IconColor => Color.white;
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.SystemStoreColor.color;
         public FactionValue RelatedFaction => Control.State.CurrentSystem.OwnerValue;
 

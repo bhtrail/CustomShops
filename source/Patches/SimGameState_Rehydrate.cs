@@ -47,12 +47,12 @@ namespace CustomShops.Patches
                     shop.RefreshShop();
             }
 
-            Control.Log($"Hated: {__instance.Constants.Story.HatedRepShopAdjustment}");
-            Control.Log($"Disliked: {__instance.Constants.Story.DislikedRepShopAdjustment}");
-            Control.Log($"Indifferent: {__instance.Constants.Story.IndifferentRepShopAdjustment}");
-            Control.Log($"Liked: {__instance.Constants.Story.LikedRepShopAdjustment}");
-            Control.Log($"Friendly: {__instance.Constants.Story.FriendlyRepShopAdjustment}");
-            Control.Log($"Honored: {__instance.Constants.Story.HonoredRepShopAdjustment}");
+            //Control.Log($"Hated: {__instance.Constants.Story.HatedRepShopAdjustment}");
+            //Control.Log($"Disliked: {__instance.Constants.Story.DislikedRepShopAdjustment}");
+            //Control.Log($"Indifferent: {__instance.Constants.Story.IndifferentRepShopAdjustment}");
+            //Control.Log($"Liked: {__instance.Constants.Story.LikedRepShopAdjustment}");
+            //Control.Log($"Friendly: {__instance.Constants.Story.FriendlyRepShopAdjustment}");
+            //Control.Log($"Honored: {__instance.Constants.Story.HonoredRepShopAdjustment}");
         }
     }
 }

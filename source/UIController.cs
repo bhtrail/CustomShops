@@ -29,40 +29,63 @@ namespace CustomShops
             Control.LogDebug(DInfo.ShopInterface, "- SetupButtons");
             foreach (var button in Buttons.Values)
             {
-                var shop = button.Shop;
-                Control.LogDebug(DInfo.ShopInterface, $"-- [{shop.Name}]");
-                Control.LogDebug(DInfo.ShopInterface, $"--- Exists:{shop.Exists} CanUse:{shop.CanUse}");
-
-                if (shop.Exists)
+                try
                 {
-                    if (shop is ISpriteIcon spr_icon)
-                        button.Button.SetImageAndText(spr_icon.Sprite, shop.Name);
-                    else if (shop is ITextIcon txt_icon)
-                        Control.State.Sim.RequestItem<Sprite>(
-                            txt_icon.SpriteID,
-                            delegate (Sprite sprite) { button.Button.SetImageAndText(sprite, shop.Name); },
-                            BattleTechResourceType.Sprite
-                            );
+                    var shop = button.Shop;
+                    Control.LogDebug(DInfo.ShopInterface, $"-- [{shop.Name}]");
+                    Control.LogDebug(DInfo.ShopInterface, $"--- Exists:{shop.Exists} CanUse:{shop.CanUse}");
 
-                    button.Icon.color = shop.IconColor;
-
-                    button.ButtonHolder.SetActive(true);
-                    if (shop.CanUse)
+                    if (shop.Exists)
                     {
-                        button.Button.SetState(ButtonState.Enabled);
-                        button.Overlay.SetActive(false);
-                        if (active == null)
-                            active = button;
+                        button.ButtonHolder.SetActive(true);
+
+                        if (shop is ISpriteIcon spr_icon)
+                        {
+                            Control.LogDebug(DInfo.ShopInterface, $"--- sprite image - set");
+                            button.Button.SetImageAndText(spr_icon.Sprite, shop.Name);
+                            Control.LogDebug(DInfo.ShopInterface, $"--- set icon color to  r{shop.IconColor.r:0.00} g{shop.IconColor.g:0.00} b{shop.IconColor.b:0.00}");
+                            button.Icon.color = shop.IconColor;
+
+                        }
+                        else if (shop is ITextIcon txt_icon)
+                        {
+                            var id = txt_icon.SpriteID;
+                            Control.LogDebug(DInfo.ShopInterface, $"--- txt image - {id} - request");
+                            Control.State.Sim.RequestItem<Sprite>(
+                               id,
+                               (sprite) => 
+                               {
+                                   Control.LogDebug(DInfo.ShopInterface, $"--- button image {id} received ");
+                                   button.Button.SetImageAndText(sprite, shop.Name);
+                                   Control.LogDebug(DInfo.ShopInterface, $"--- set icon color to  r{shop.IconColor.r:0.00} g{shop.IconColor.g:0.00} b{shop.IconColor.b:0.00}");
+                                   button.Icon.color = shop.IconColor;
+                                   Control.LogDebug(DInfo.ShopInterface, $"--- set");
+                               },
+                               BattleTechResourceType.Sprite
+                               );
+                        }
+
+                        if (shop.CanUse)
+                        {
+                            button.Button.SetState(ButtonState.Enabled);
+                            button.Overlay.SetActive(false);
+                            if (active == null)
+                                active = button;
+                        }
+                        else
+                        {
+                            button.Button.SetState(ButtonState.Disabled);
+                            button.Overlay.SetActive(true);
+                        }
                     }
                     else
                     {
-                        button.Button.SetState(ButtonState.Disabled);
-                        button.Overlay.SetActive(true);
+                        button.ButtonHolder.SetActive(false);
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    button.ButtonHolder.SetActive(false);
+                    Control.LogError(e);
                 }
             }
             if (active != null)

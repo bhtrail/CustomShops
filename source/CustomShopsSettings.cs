@@ -34,10 +34,9 @@ namespace CustomShops
     {
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
-        public DInfo DebugType= DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch | DInfo.ShopActions | DInfo.BuyBack | DInfo.TypedItemDef;
-        public bool DEBUG_FactionShopAlwaysAvaliable = false;
-        public bool DEBUG_BlackMarketAlwaysAvaliable = false;
-
+        public DInfo DebugType= DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch ;
+        public bool DEBUG_FactionShopAlwaysAvaliable = true;
+        public bool DEBUG_BlackMarketAlwaysAvaliable = true;
 
 
         public bool SystemShop  = true;
