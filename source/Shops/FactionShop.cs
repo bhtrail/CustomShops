@@ -81,7 +81,7 @@ namespace CustomShops.Shops
             base.SetLoadedShop(shop);
         }
 
-        public float GetDiscount()
+        public float GetDiscount(TypedShopDefItem item)
         {
             return 1 + Control.Settings.FactionShopAdjustment;
         }

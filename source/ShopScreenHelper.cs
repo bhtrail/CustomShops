@@ -125,7 +125,7 @@ namespace CustomShops
                 if (shop is ICustomDiscount c_discount)
                 {
                     MiniWidgetHelper.ReputationBonusText.gameObject.SetActive(true);
-                    var discount = c_discount.GetDiscount() - 1;
+                    var discount = c_discount.GetDiscount(null) - 1;
 
                     var str = "Reputation: ";
                     if (discount > 0f)

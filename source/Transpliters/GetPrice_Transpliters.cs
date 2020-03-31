@@ -48,7 +48,7 @@ namespace CustomShops
             else if (UIControler.ActiveShop is INoDiscount)
                 discount = 1;
             else if (UIControler.ActiveShop is ICustomDiscount cdisc)
-                discount = cdisc.GetDiscount();
+                discount = cdisc.GetDiscount(titem);
 
             return Mathf.CeilToInt(price * discount);
         }

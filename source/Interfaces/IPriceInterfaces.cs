@@ -22,7 +22,7 @@ namespace CustomShops
 
     public interface ICustomDiscount
     {
-        public float GetDiscount();
+        public float GetDiscount(TypedShopDefItem item);
     }
 
     public interface INoDiscount
