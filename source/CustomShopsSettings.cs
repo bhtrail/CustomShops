@@ -50,7 +50,5 @@ namespace CustomShops
         public bool ShowConfirm = true;
         public int ConfirmLowLimit = 100000;
         public float FactionShopAdjustment = -0.25f;
-
-
     }
 }
