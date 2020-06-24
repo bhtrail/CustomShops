@@ -12,6 +12,7 @@ namespace CustomShops
         public static bool Replace { get; private set; } = false;
         public static string Text { get; private set; } = "SELL";
 
+
         public static void StartDialog(string replace_title, ShopDefItem selected, string item_name, int max, int price,
             UnityAction<int> on_confirm, UnityAction on_cancel)
         {
@@ -33,7 +34,7 @@ namespace CustomShops
     {
         [HarmonyPostfix]
         public static void ReplaceTitle(LocalizableText ___TitleText, LocalizableText ___DescriptionText,
-            string ___itemName, int ___costPerUnit, int ___quantityBeingSold)
+            string ___itemName, int ___costPerUnit, int ___quantityBeingSold, HBSDOTweenButton ___ConfirmButton)
         {
             if (!SG_Stores_MultiPurchasePopup_Handler.Replace)
                 return;
@@ -41,6 +42,7 @@ namespace CustomShops
             ___TitleText.SetText($"{SG_Stores_MultiPurchasePopup_Handler.Text} {___itemName}");
             var value = SimGameState.GetCBillString(___costPerUnit * ___quantityBeingSold);
             ___DescriptionText.SetText($"{SG_Stores_MultiPurchasePopup_Handler.Text} FOR <color=#F79B26>{value}</color>");
+            ___ConfirmButton.SetText(SG_Stores_MultiPurchasePopup_Handler.Text);
         }
     }
 

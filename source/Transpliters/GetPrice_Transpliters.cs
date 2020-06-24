@@ -21,36 +21,7 @@ namespace CustomShops
 
         public static int GetPrice(this Shop shop, ShopDefItem item, Shop.PurchaseType purchaseType, Shop.ShopType shopType)
         {
-            if (UIControler.ActiveShop == null)
-            {
-                Control.LogError("No Shop to get price!");
-                return 1;
-            }
-
-            var titem = item as TypedShopDefItem;
-            if (titem == null)
-            {
-                Control.LogError("not typed item");
-                return 1;
-            }
-
-            int price = 1;
-            float discount = 1;
-            if (UIControler.ActiveShop is IDefaultPrice)
-                price = titem.Type == ShopItemType.MechPart ? titem.Mech.SimGameMechPartCost : titem.Description.Cost;
-            else if (UIControler.ActiveShop is ICustomPrice cprice)
-                price = cprice.GetPrice(titem);
-            else
-                Control.LogError("Unknown shop type, cannot get price for " + item.ID);
-
-            if (UIControler.ActiveShop is IDiscountFromFaction faction_discount)
-                discount = 1 + Control.State.Sim.GetReputationShopAdjustment(faction_discount.RelatedFaction);
-            else if (UIControler.ActiveShop is INoDiscount)
-                discount = 1;
-            else if (UIControler.ActiveShop is ICustomDiscount cdisc)
-                discount = cdisc.GetDiscount(titem);
-
-            return Mathf.CeilToInt(price * discount);
+            return UIControler.GetPrice(item);
         }
 
         public static IEnumerable<CodeInstruction> RepalceGetPrice(IEnumerable<CodeInstruction> instructions)

@@ -102,14 +102,15 @@
   <ItemGroup>
     <Compile Include="Control.cs" />
     <Compile Include="CustomShopsSettings.cs" />
+    <Compile Include="DEBUG_Patches\ItemCollectionResultGenerator_GenerateItemCollection.cs" />
     <Compile Include="Interfaces\IPriceInterfaces.cs" />
+    <Compile Include="Interfaces\IShopDescription.cs" />
     <Compile Include="Patches\SG_Shop_Screen_ReceiveButtonPress.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Interfaces\IconInterfaces.cs" />
     <Compile Include="Interfaces\IDefaultShop.cs" />
     <Compile Include="Interfaces\FactionInterfaces.cs" />
     <Compile Include="Interfaces\ISaveShop.cs" />
-    <Compile Include="Interfaces\IShopDescriptor.cs" />
     <Compile Include="MiniFactionPanelHelper.cs" />
     <Compile Include="Patches\SG_Shop_Screen_RefreshColorAreas.cs" />
     <Compile Include="Patches\SG_Shop_Screen_BeginShop.cs" />
@@ -139,8 +140,6 @@
       <Link>mod.json</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DEBUG_Patches\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

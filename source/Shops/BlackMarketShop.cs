@@ -26,7 +26,7 @@ namespace CustomShops.Shops
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => false;
-
+        public override int SortOrder => Control.Settings.BlackMarketPriority;
 
         protected override void UpdateTags()
         {

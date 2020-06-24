@@ -22,6 +22,7 @@ namespace CustomShops.Shops
                     RelatedFaction.FactionDef.storePanelImage;
             }
         }
+        public override int SortOrder => Control.Settings.FactionShopPriority;
 
         public virtual Sprite Sprite
         {

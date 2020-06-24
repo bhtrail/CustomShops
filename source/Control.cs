@@ -88,6 +88,7 @@ namespace CustomShops
             {
                 Log($"Shop [{shop.Name}] registred");
                 Shops.Add(shop);
+
                 if (shop.RefreshOnMonthChange)
                     OnMonthChange.Add(shop);
                 if (shop.RefreshOnOwnerChange)

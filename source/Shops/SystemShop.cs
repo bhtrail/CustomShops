@@ -42,6 +42,7 @@ namespace CustomShops.Shops
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => true;
+        public override int SortOrder => Control.Settings.SystemShopPriority;
 
 
         protected override void UpdateTags()

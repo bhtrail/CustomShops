@@ -27,6 +27,7 @@ namespace CustomShops
 
         public Shop ShopToUse => Shop;
 
+        public abstract int SortOrder { get; }
         public abstract bool RefreshOnSystemChange { get; }
         public abstract bool RefreshOnMonthChange { get; }
         public abstract bool RefreshOnOwnerChange { get; }
@@ -57,23 +58,24 @@ namespace CustomShops
             else
                 Shop.ItemCollections.Clear();
 
-            foreach (var item in Tags)
-            {
-                try
+            if (Tags != null)
+                foreach (var item in Tags)
                 {
-                    var col = Control.State.Sim.DataManager.ItemCollectionDefs.Get(item);
-                    if (col == null)
+                    try
                     {
-                        Control.LogError("Cannot retrive ItemCollection " + item + ", skipping");
-                        continue;
+                        var col = Control.State.Sim.DataManager.ItemCollectionDefs.Get(item);
+                        if (col == null)
+                        {
+                            Control.LogError("Cannot retrive ItemCollection " + item + ", skipping");
+                            continue;
+                        }
+                        Shop.ItemCollections.Add(col);
                     }
-                    Shop.ItemCollections.Add(col);
+                    catch (Exception e)
+                    {
+                        Control.LogError("Cannot retrive ItemCollection " + item + ", skipping", e);
+                    }
                 }
-                catch (Exception e)
-                {
-                    Control.LogError("Cannot retrive ItemCollection " + item + ", skipping", e);
-                }
-            }
         }
 
         public void RefreshShop()

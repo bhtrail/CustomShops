@@ -17,10 +17,21 @@ namespace CustomShops
         public Color ShopColor { get; }
         public bool Exists { get; }
         public bool CanUse { get; }
+        public int SortOrder { get; }
 
         public bool RefreshOnSystemChange { get; }
         public bool RefreshOnMonthChange { get; }
         public bool RefreshOnOwnerChange { get; }
         void RefreshShop();
+    }
+
+    public interface IListShop
+    {
+        List<ShopDefItem> Items { get; }
+    }
+
+    public interface ICustomPurshase
+    {
+        void Purshase(ShopDefItem item, int quantity);
     }
 }

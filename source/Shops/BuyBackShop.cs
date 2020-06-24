@@ -39,6 +39,8 @@ namespace CustomShops
 
         public string SpriteID => "customshops_cbill";// "uixTxrIcon_mrb-star"; // "uixTxrIcon_planet"
 
+        public int SortOrder => Control.Settings.BuyBackShopPriority;
+
         public void FillFactionWidget(ShopScreenHelper helper)
         {
             try
@@ -88,6 +90,7 @@ namespace CustomShops
         public void SetLoadedShop(Shop shop)
         {
             this.ShopToUse = shop;
+            shopT = new Traverse(ShopToUse);
         }
 
         public void AddItemToShop(ShopDefItem item, int count)

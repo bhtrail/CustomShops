@@ -151,6 +151,15 @@ namespace CustomShops
         public void FillCusotm(IShopDescriptor shop)
         {
             var f_custom = shop as ICustomFillWidget;
+            f_custom.FillFactionWidget(this);
+        }
+
+        internal void ChangeToBuy(IListShop l_shop, bool v)
+        {
+            var shop = new Shop(Control.State.Sim, Control.State.CurrentSystem, null, Shop.RefreshType.None, Shop.ShopType.System);
+            shop.ActiveInventory.Clear();
+            shop.ActiveInventory.AddRange(l_shop.Items);
+            Screen.ChangeToBuy(shop, true);
         }
     }
 }

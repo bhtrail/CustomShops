@@ -8,6 +8,8 @@ using UnityEngine;
 
 namespace CustomShops
 {
+
+
     public class TSMTagInfo
     {
         public string Tag { get; set; }
@@ -27,14 +29,21 @@ namespace CustomShops
         ShopActions = 64,
         TypedItemDef = 128,
         BuyBack = 256,
+        ItemGeneration = 512,
         ALL = 0xffff
     }
 
     public class CustomShopsSettings
     {
+        public const int SYSTEM_SHOP_PRIORITY = 100;
+        public const int FACTION_SHOP_PRIORITY = 400;
+        public const int BLACKMARKET_SHOP_PRIORITY = 700;
+        public const int BUYBACK_SHOP_PRIORITY = 999;
+
+
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
-        public DInfo DebugType = DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch ;
+        public DInfo DebugType = DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch | DInfo.ItemGeneration ;
         public bool DEBUG_FactionShopAlwaysAvaliable = false;
         public bool DEBUG_BlackMarketAlwaysAvaliable = false;
 
@@ -46,6 +55,11 @@ namespace CustomShops
 
         public bool AllowMultiSell = true;
         public bool AllowMultiBuy = true;
+
+        public int SystemShopPriority = SYSTEM_SHOP_PRIORITY;
+        public int FactionShopPriority = FACTION_SHOP_PRIORITY;
+        public int BlackMarketPriority = BLACKMARKET_SHOP_PRIORITY;
+        public int BuyBackShopPriority = BUYBACK_SHOP_PRIORITY;
 
         public bool ShowConfirm = true;
         public int ConfirmLowLimit = 100000;
