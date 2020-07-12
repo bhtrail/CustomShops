@@ -21,7 +21,9 @@ namespace CustomShops
 
         public static int GetPrice(this Shop shop, ShopDefItem item, Shop.PurchaseType purchaseType, Shop.ShopType shopType)
         {
-            return UIControler.GetPrice(item);
+            var price = UIControler.GetPrice(item);
+            Control.LogDebug(DInfo.Price, $"get_price for {item.ID}: {price}");
+            return price;
         }
 
         public static IEnumerable<CodeInstruction> RepalceGetPrice(IEnumerable<CodeInstruction> instructions)

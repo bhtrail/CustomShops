@@ -10,7 +10,7 @@ using Harmony;
 
 namespace CustomShops
 {
-    public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFillWidget, ITextIcon, INoDiscount, ICustomPrice
+    public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFillWidget, ITextIcon, INoDiscount, ICustomPrice, ISellShop
     {
         private Traverse shopT;
         private Color PanelColor = new Color(0, 0.2f, 0);
@@ -40,6 +40,8 @@ namespace CustomShops
         public string SpriteID => "customshops_cbill";// "uixTxrIcon_mrb-star"; // "uixTxrIcon_planet"
 
         public int SortOrder => Control.Settings.BuyBackShopPriority;
+
+        public int SellPriority => CustomShopsSettings.BUYBACK_SHOP_PRIORITY;
 
         public void FillFactionWidget(ShopScreenHelper helper)
         {
@@ -113,6 +115,17 @@ namespace CustomShops
             {
                 Control.LogError(e);
             }
+        }
+
+        public bool OnSellItem(ShopDefItem item, int num)
+        {
+            if (Control.Settings.BuyBackShop)
+            {
+                Control.LogDebug(DInfo.BuyBack, $"Addiing {item.ID} to buy back shop");
+                Control.BuyBack.AddItemToShop(item, num);
+                return true;
+            }
+            return false;
         }
     }
 }

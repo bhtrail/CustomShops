@@ -103,6 +103,8 @@ namespace CustomShops
             yield break;
         }
 
+
+        private static bool show_full_price_debug = false;
         public static int GetPrice(ShopDefItem item)
         {
             if (UIControler.ActiveShop == null)
@@ -264,11 +266,6 @@ namespace CustomShops
 
             if (sold > 0)
             {
-                if (Control.Settings.BuyBackShop)
-                {
-                    Control.LogDebug(DInfo.BuyBack, $"Addiing {shop_def.ID} to buy back shop");
-                    Control.BuyBack.AddItemToShop(shop_def, sold);
-                }
 
                 Control.LogDebug(DInfo.ShopActions, $"--- sold, process messages");
                 SimGamePurchaseMessage message = new SimGamePurchaseMessage(shop_def, shop_def.SellCost, SimGamePurchaseMessage.TransactionType.Sell);
@@ -283,6 +280,14 @@ namespace CustomShops
                 ShopHelper.inventoryWidget.RefreshInventoryList();
                 ShopScreen.UpdateMoneySpot();
                 ShopHelper.triggerIronManAutoSave = true;
+
+                foreach (var s in Control.SaleShops)
+                {
+                    if (s is IShopDescriptor sd && sd.CanUse)
+                        if (s.OnSellItem(shop_def, sold))
+                            break;
+
+                }
             }
             else
                 Control.LogDebug(DInfo.ShopActions, $"--- not sold");
@@ -455,9 +460,27 @@ namespace CustomShops
         public static void DefaultPurshase(IDefaultShop shop, ShopDefItem item, int quantity)
         {
             var ushop = shop.ShopToUse;
+            var shop_item = ushop.ActiveInventory.Find((ShopDefItem cachedItem) => cachedItem.ID == item.ID && cachedItem.Type == item.Type);
+            if (shop_item == null)
+            {
+                Control.LogError($"Shop dont containg {item.ID} to purshase");
+                return;
+            }
+            if (!item.IsInfinite)
+            {
+                shop_item.Count -= quantity;
+                if (shop_item.Count < 1)
+                {
+                    ushop.ActiveInventory.Remove(shop_item);
+                }
+            }
+            int price = GetPrice(item);
+
+            Control.State.Sim.AddFunds(-price * quantity, null, true, true);
             for (int i = 0; i < quantity; i++)
-                ushop.Purchase(item.ID, item.IsInfinite ? Shop.PurchaseType.Normal : Shop.PurchaseType.Special, item.Type);
+                Control.State.Sim.AddFromShopDefItem(shop_item, false, price, SimGamePurchaseMessage.TransactionType.Purchase);
         }
+
 
         public static void DefaultPurshase(IListShop shop, ShopDefItem item, int quantity)
         {
@@ -584,7 +607,7 @@ namespace CustomShops
                 Control.LogDebug(DInfo.TabSwitch, $"-- IDefaultShop");
                 ShopScreen.ChangeToBuy(def_shop.ShopToUse, true);
             }
-            else if(shop is IListShop l_shop)
+            else if (shop is IListShop l_shop)
             {
                 ShopHelper.ChangeToBuy(l_shop, true);
             }

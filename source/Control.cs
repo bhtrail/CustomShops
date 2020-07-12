@@ -30,6 +30,7 @@ namespace CustomShops
         internal static List<IShopDescriptor> OnSystemChange = new List<IShopDescriptor>();
         internal static List<IShopDescriptor> OnMonthChange = new List<IShopDescriptor>();
         internal static List<IShopDescriptor> OnOwnerChange = new List<IShopDescriptor>();
+        internal static List<ISellShop> SaleShops = new List<ISellShop>();
 
         public static BuyBackShop BuyBack { get; private set; }
         public static void Init(string directory, string settingsJSON)
@@ -57,7 +58,7 @@ namespace CustomShops
                 var harmony = HarmonyInstance.Create($"{ModName}");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 Logger.Log("=========================================================");
-                Logger.Log($"Loaded {ModName} v0.1 for bt 1.9");
+                Logger.Log($"Loaded {ModName} v0.2 for bt 1.9");
                 Logger.Log("=========================================================");
                 Logger.LogDebug("done");
                 Logger.LogDebug(JSONSerializationUtility.ToJSON(Settings));
@@ -95,6 +96,12 @@ namespace CustomShops
                     OnOwnerChange.Add(shop);
                 if (shop.RefreshOnSystemChange)
                     OnSystemChange.Add(shop);
+
+                if(shop is ISellShop ss)
+                {
+                    SaleShops.Add(ss);
+                    SaleShops.Sort((i1, i2) => i1.SellPriority.CompareTo(i2.SellPriority));
+                }
             }
         }
 

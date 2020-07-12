@@ -30,6 +30,7 @@ namespace CustomShops
         TypedItemDef = 128,
         BuyBack = 256,
         ItemGeneration = 512,
+        Price = 1024,
         ALL = 0xffff
     }
 
