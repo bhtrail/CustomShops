@@ -59,9 +59,7 @@ base interface for shop, need to be implemented
         public bool Exists { get; }
         public bool CanUse { get; }
 
-        public bool RefreshOnSystemChange { get; }
-        public bool RefreshOnMonthChange { get; }
-        public bool RefreshOnOwnerChange { get; }
+
         void RefreshShop();
     }
 ```
@@ -80,11 +78,6 @@ Exists - checks if this shop exists in system, in simple - need to create shop t
 
 CanUse - check if shop avaliable for player - if return false tab still be created but will be disabled(like black market when you not have access to it)
 
-RefreshOnSystemChange - check if shop need to be refreshed on system change
-
-RefreshOnMonthChange - check if shop need to be refreshed every 4 week(not implemented)
-
-RefreshOnOwnerChange - check if shop need to be refreshed if system owner changed(not implemented)
 
 RefreshShop - called when shop need to refresh its inventory(also on shop initilisation)
 
@@ -131,6 +124,30 @@ Define Shop to use for shop inventory and purshase operations(currently only ava
         Shop ShopToUse { get; }
     }
 ```
+
+### IListShop
+
+Define shop that keap its content in List not Shop class(you still need convert it to Shop for savegame)
+```
+    public interface IListShop
+    {
+        List<ShopDefItem> Items { get; }
+    }
+```
+
+### ICustomPurshase
+
+Define shop with custom purshase handler. Purshase called when item already purshased and removed from shop interface. To finalize pursahse you need implement removing item from 
+shop itself, adding funds and item, and other stuff you need. You can use `CustomShops.UIControl.DefaultPurshase(this, item, quantity)`(defined for both list and default shops) and implement only 
+custom stuff if any changes on usual buy pursahse process not needed
+
+```
+    public interface ICustomPurshase
+    {
+        void Purshase(ShopDefItem item, int quantity);
+    }
+```
+
 
 ### IRelatedFaction
 
@@ -203,7 +220,21 @@ INoDiscount - no discount(allways 1)
 
 ICustomDiscount - return discount for item. if item is null - should return general discount for shop(used for MiniFactionWidget)
 
-# Planned features
+## ShopRefresh
 
-1. More interfaces for shop inventory and custom purshase operations
-2. Customizable filters in shop ui
+To fill/refresh shop content IShopDescriptor.RefreshShop() called. You can subscribe your shop to predefined events(case indiferent)
+```
+	"Daily"
+    "SystemChange"
+    "MonthEnd"
+    "ContractComplete"
+    "OwnerChange"
+```
+
+while register shop set a second parameter to enumeration of requered events like
+`CustomShops.Control.RegisterShop(myshop, new string[] { "systemchange", "monthend" });`
+
+Also you can call RefreshShop directly when needed for some custom refreshes or register new event with
+`CustomShops.Control.RegisterRefreshEvent("EventName")`
+and then call with
+`CustomShops.Control.RefreshShops("EventName");`
