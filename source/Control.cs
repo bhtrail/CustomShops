@@ -6,9 +6,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using BattleTech;
+using BattleTech.UI;
 using HBS.Logging;
 using HBS.Util;
 using CustomShops.Shops;
+using Localize;
 
 namespace CustomShops
 {
@@ -27,10 +29,9 @@ namespace CustomShops
 
         internal static List<IShopDescriptor> Shops = new List<IShopDescriptor>();
 
-        internal static List<IShopDescriptor> OnSystemChange = new List<IShopDescriptor>();
-        internal static List<IShopDescriptor> OnMonthChange = new List<IShopDescriptor>();
-        internal static List<IShopDescriptor> OnOwnerChange = new List<IShopDescriptor>();
         internal static List<ISellShop> SaleShops = new List<ISellShop>();
+
+        private static Dictionary<string, List<IShopDescriptor>> RefreshEvents;
 
         public static BuyBackShop BuyBack { get; private set; }
         public static void Init(string directory, string settingsJSON)
@@ -55,25 +56,35 @@ namespace CustomShops
 
                 SetupLogging(directory);
 
+
                 var harmony = HarmonyInstance.Create($"{ModName}");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 Logger.Log("=========================================================");
-                Logger.Log($"Loaded {ModName} v0.2 for bt 1.9");
+                Logger.Log($"Loaded {ModName} v0.3 for bt 1.9");
                 Logger.Log("=========================================================");
                 Logger.LogDebug("done");
                 Logger.LogDebug(JSONSerializationUtility.ToJSON(Settings));
 
                 State = new GameState();
+                RefreshEvents = new Dictionary<string, List<IShopDescriptor>>();
+
+
+                RegisterRefreshEvent("Daily");
+                RegisterRefreshEvent("SystemChange");
+                RegisterRefreshEvent("MonthEnd");
+                RegisterRefreshEvent("ContractComplete");
+                RegisterRefreshEvent("OwnerChange");
+
                 if (Settings.SystemShop)
-                    RegisterShop(new SystemShop());
+                    RegisterShop(new SystemShop(), new List<string>() { "systemchange", "monthend" });
                 if (Settings.FactionShop)
-                    RegisterShop(new FactionShop());
+                    RegisterShop(new FactionShop(), new List<string>() { "systemchange", "monthend" });
                 if (Settings.BlackMarketShop)
-                    RegisterShop(new BlackMarketShop());
+                    RegisterShop(new BlackMarketShop(), new List<string>() { "systemchange", "monthend" });
                 if (Settings.BuyBackShop)
                 {
                     BuyBack = new BuyBackShop();
-                    RegisterShop(BuyBack);
+                    RegisterShop(BuyBack, new List<string>() { "systemchange" });
                 }
 
             }
@@ -83,26 +94,47 @@ namespace CustomShops
             }
         }
 
+        private static bool register_shop(IShopDescriptor shop)
+        {
+            if (shop == null)
+                return false;
+
+            Log($"Shop [{shop.Name}] registred");
+            Shops.Add(shop);
+
+            if (shop is ISellShop ss)
+            {
+                SaleShops.Add(ss);
+                SaleShops.Sort((i1, i2) => i1.SellPriority.CompareTo(i2.SellPriority));
+            }
+
+            return true;
+
+        }
+
+        [Obsolete]
         public static void RegisterShop(IShopDescriptor shop)
         {
-            if (shop != null)
+            if (register_shop(shop))
             {
-                Log($"Shop [{shop.Name}] registred");
-                Shops.Add(shop);
-
                 if (shop.RefreshOnMonthChange)
-                    OnMonthChange.Add(shop);
+                    AddToEvent("MonthEnd", shop);
                 if (shop.RefreshOnOwnerChange)
-                    OnOwnerChange.Add(shop);
+                    AddToEvent("OwnerChange", shop);
                 if (shop.RefreshOnSystemChange)
-                    OnSystemChange.Add(shop);
-
-                if(shop is ISellShop ss)
-                {
-                    SaleShops.Add(ss);
-                    SaleShops.Sort((i1, i2) => i1.SellPriority.CompareTo(i2.SellPriority));
-                }
+                    AddToEvent("SystemChange", shop);
             }
+
+        }
+
+        public static void RegisterShop(IShopDescriptor shop, IEnumerable<string> refresh_events)
+        {
+            if (register_shop(shop) && refresh_events != null)
+                foreach (var name in refresh_events)
+                {
+                    AddToEvent(name, shop);
+                }
+
         }
 
         #region LOGGING
@@ -190,5 +222,37 @@ namespace CustomShops
 
         #endregion
 
+        public static void RegisterRefreshEvent(string Event)
+        {
+            var n = Event.ToLower();
+            if (RefreshEvents.ContainsKey(n))
+            {
+                LogError($"Refresh event {Event} already registred");
+                return;
+            }
+            RefreshEvents[n] = new List<IShopDescriptor>();
+
+        }
+
+        internal static void AddToEvent(string name, IShopDescriptor shop)
+        {
+            var n = name.ToLower();
+            if (!RefreshEvents.ContainsKey(n))
+            {
+                LogError($"Unknown Refresh event {name}, please check if registred");
+                RegisterRefreshEvent(name);
+            }
+
+            RefreshEvents[n].Add(shop);
+        }
+
+        public static void RefreshShops(string Event)
+        {
+            if(RefreshEvents.TryGetValue(Event.ToLower(), out Shops))
+                foreach (var shopDescriptor in Shops)
+                    shopDescriptor.RefreshShop();
+            else
+                LogError($"Unknown Refresh event {Event} requested, skipped");
+        }
     }
 }

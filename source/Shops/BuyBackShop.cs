@@ -10,7 +10,7 @@ using Harmony;
 
 namespace CustomShops
 {
-    public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFillWidget, ITextIcon, INoDiscount, ICustomPrice, ISellShop
+    public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFillWidget, ITextIcon, INoDiscount, ICustomPrice, ISellShop, ICustomPurshase
     {
         private Traverse shopT;
         private Color PanelColor = new Color(0, 0.2f, 0);
@@ -95,20 +95,23 @@ namespace CustomShops
             shopT = new Traverse(ShopToUse);
         }
 
-        public void AddItemToShop(ShopDefItem item, int count)
+        private void AddItemToShop(ShopDefItem item, int count)
         {
             try
             {
-                if (item.Type == ShopItemType.Mech)
-                {
-                    Control.LogDebug(DInfo.BuyBack, "- cannot add mech to buyback, skip");
-                    return;
-                }
+                bool ismech = item.Type == ShopItemType.Mech;
+                ShopDefItem item_to_add = new ShopDefItem(
+                    ismech ? item.ID.Replace("chassisdef", "mechdef") : item.ID,
+                    item.Type,
+                    item.DiscountModifier,
+                    count,
+                    item.IsInfinite,
+                    item.IsDamaged,
+                    item.SellCost
+                    );
 
                 var res = new ItemCollectionResultGenerator(Control.State.Sim);
-                var itemdef = new ShopDefItem(item);
-                itemdef.Count = count;
-                res.InsertShopDefItem(itemdef, ShopToUse.ActiveInventory);
+                res.InsertShopDefItem(item_to_add, ShopToUse.ActiveInventory);
 
             }
             catch (Exception e)
@@ -126,6 +129,36 @@ namespace CustomShops
                 return true;
             }
             return false;
+        }
+
+        public void Purshase(ShopDefItem item, int quantity)
+        {
+            if (item.Type == ShopItemType.Mech)
+            {
+                var shop_item = ShopToUse.ActiveInventory.Find((ShopDefItem cachedItem) => cachedItem.ID == item.ID && cachedItem.Type == item.Type);
+                if (shop_item == null)
+                {
+                    Control.LogError($"Shop dont containg {item.ID} to purshase");
+                    return;
+                }
+                if (!item.IsInfinite)
+                {
+                    shop_item.Count -= quantity;
+                    if (shop_item.Count < 1)
+                    {
+                        ShopToUse.ActiveInventory.Remove(shop_item);
+                    }
+                }
+                int price = UIControler.GetPrice(item);
+
+                Control.State.Sim.AddFunds(-price * quantity, null, true, true);
+                var mech = CustomShops.Control.State.Sim.DataManager.MechDefs.Get(item.ID);
+
+                for (int i = 0; i < quantity; i++)
+                    Control.State.Sim.AddItemStat(mech.Chassis.Description.Id, mech.GetType(), false);
+            }
+            else
+                UIControler.DefaultPurshase(this, item, quantity);
         }
     }
 }

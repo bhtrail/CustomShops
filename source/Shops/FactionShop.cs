@@ -30,12 +30,8 @@ namespace CustomShops.Shops
             {
                 if (!Exists)
                     return null;
-
-                var owner = Control.State.CurrentSystem.Def.FactionShopOwnerValue;
-                if (owner == null)
-                    return null;
-
-                return owner.FactionDef.GetSprite();
+                var owner = RelatedFaction;
+                return owner != null ? owner.FactionDef.GetSprite() : null;
             }
         }
         public override Color IconColor
@@ -62,10 +58,11 @@ namespace CustomShops.Shops
                 return owner.FactionDef.GetFactionStoreColor(out var color) ? color : LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.FactionStoreColor.color;
             }
         }
+
         public virtual FactionValue RelatedFaction => Control.State.CurrentSystem.Def.FactionShopOwnerValue;
 
-        public override bool Exists => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.Def.FactionShopItems != null;
-        public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (RelatedFaction == null ? false : Control.State.Sim.IsFactionAlly(RelatedFaction));
+        public override bool Exists => RelatedFaction!= null && !RelatedFaction.IsInvalidUnset && Control.State.CurrentSystem != null && Control.State.CurrentSystem.Def.FactionShopItems != null;
+        public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvaliable || (RelatedFaction != null && Control.State.Sim.IsFactionAlly(RelatedFaction));
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
         public override bool RefreshOnOwnerChange => true;

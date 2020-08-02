@@ -119,10 +119,10 @@
     <Compile Include="Patches\SH_Shop_Screen_AddShopItemToWidget.cs" />
     <Compile Include="Patches\SimGameState_Dehydrate.cs" />
     <Compile Include="Patches\SimGameState_Init.cs" />
+    <Compile Include="Patches\RefreshShopPatches.cs" />
     <Compile Include="Patches\SimGameState_Rehydrate.cs" />
     <Compile Include="Patches\SimGameState_SetCurrentSystem.cs" />
     <Compile Include="Patches\StarSystem_Dehydrate.cs" />
-    <Compile Include="Patches\StarSystem_RefreshShops.cs" />
     <Compile Include="Shops\StarSystem_Rehydrate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShopScreenHelper.cs" />

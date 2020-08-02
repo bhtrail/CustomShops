@@ -19,8 +19,11 @@ namespace CustomShops
         public bool CanUse { get; }
         public int SortOrder { get; }
 
+        [Obsolete]
         public bool RefreshOnSystemChange { get; }
+        [Obsolete]
         public bool RefreshOnMonthChange { get; }
+        [Obsolete]
         public bool RefreshOnOwnerChange { get; }
         void RefreshShop();
     }

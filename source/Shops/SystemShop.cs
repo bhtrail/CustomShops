@@ -34,10 +34,10 @@ namespace CustomShops.Shops
         }
         public override Color IconColor => Color.white;
         public override Color ShopColor => LazySingletonBehavior<UIManager>.Instance.UILookAndColorConstants.SystemStoreColor.color;
-        public FactionValue RelatedFaction => Control.State.CurrentSystem.OwnerValue;
+        public virtual FactionValue RelatedFaction => Control.State.CurrentSystem.OwnerValue;
 
         public override bool Exists => true;
-        public override bool CanUse => Control.State.CurrentSystem == null ? false : Control.State.CurrentSystem.CanUseSystemStore();
+        public override bool CanUse => Control.State.CurrentSystem != null && Control.State.CurrentSystem.CanUseSystemStore();
 
         public override bool RefreshOnSystemChange => true;
         public override bool RefreshOnMonthChange => false;
