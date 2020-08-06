@@ -13,7 +13,6 @@ namespace CustomShops
     {
         public abstract string Name { get; }
         public abstract string TabText { get; }
-        public abstract string HeaderText { get; }
         public abstract string ShopPanelImage { get; }
         public abstract Color IconColor { get; }
         public abstract Color ShopColor { get; }

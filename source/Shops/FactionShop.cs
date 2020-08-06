@@ -9,7 +9,6 @@ namespace CustomShops.Shops
     {
         public override string Name => "Faction";
         public override string TabText => RelatedFaction == null ? "ERROR_FACTION" : RelatedFaction.Name;
-        public override string HeaderText => "Faction";
         public override string ShopPanelImage
         {
             get

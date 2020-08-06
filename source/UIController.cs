@@ -410,13 +410,19 @@ namespace CustomShops
             Control.LogDebug(DInfo.ShopActions, $"--- refresh shop");
             if (!shop_def.IsInfinite)
                 if (num < selected.quantity)
+                {
+                    Control.LogDebug(DInfo.ShopActions, $"---- {num} < {selected.quantity} - reducing");
                     selected.ModifyQuantity(-num);
+                }
                 else
                 {
+                    
+                    Control.LogDebug(DInfo.ShopActions, $"--- {num} >= {selected.quantity} - removing");
+                    selected.quantity = 1;
                     ShopHelper.inventoryWidget.RemoveDataItem(selected);
-                    if (selected != null)
-                        selected.Pool();
+                    selected.Pool();
                     ShopHelper.selectedController = null;
+
                 }
             ShopHelper.inventoryWidget.RefreshInventoryList();
 

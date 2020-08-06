@@ -14,7 +14,6 @@ namespace CustomShops.Shops
     {
         public override string Name => "System";
         public override string TabText => "System";
-        public override string HeaderText => Control.State.CurrentSystem.Def.Description.Name;
         public override string ShopPanelImage => SG_Stores_StoreImagePanel.STORE_ILLUSTRATION;
         public virtual string SpriteID
         {
