@@ -123,7 +123,19 @@ namespace CustomShops
             int price = 1;
             float discount = 1;
             if (UIControler.ActiveShop is IDefaultPrice)
-                price = titem.Type == ShopItemType.MechPart ? titem.Mech.SimGameMechPartCost : titem.Description.Cost;
+                if (titem.Type == ShopItemType.MechPart)
+                    price = titem.Mech.SimGameMechPartCost;
+                else if (titem.Type == ShopItemType.Mech)
+                {
+                    if (Control.Settings.CheckFakeVehicle &&
+                        titem.Mech.Chassis.ChassisTags.Contains(Control.Settings.FakeVehicleTag))
+                        price = titem.Mech.Chassis.Description.Cost;
+                    else
+                        price = titem.Mech.Description.Cost;
+                }
+                else
+                    price = titem.Description.Cost;
+
             else if (UIControler.ActiveShop is ICustomPrice cprice)
                 price = cprice.GetPrice(titem);
             else
@@ -135,6 +147,8 @@ namespace CustomShops
                 discount = 1;
             else if (UIControler.ActiveShop is ICustomDiscount cdisc)
                 discount = cdisc.GetDiscount(titem);
+
+            Control.LogDebug(DInfo.Price, $"Total price for {titem.Description.Id} is {price:0000}*{discount:0.00} = {Mathf.CeilToInt(price * discount)}");
 
             return Mathf.CeilToInt(price * discount);
         }
@@ -154,7 +168,6 @@ namespace CustomShops
                 Control.LogDebug(DInfo.ShopInterface, "-- Create buttons");
                 foreach (var shop in Control.Shops.OrderBy(i => i.SortOrder))
                 {
-
                     Control.LogDebug(DInfo.ShopInterface, $"--- {shop.Name}");
                     var button = new StoreButton(store_button, shop);
                     Buttons.Add(shop.Name, button);
@@ -167,8 +180,10 @@ namespace CustomShops
 
                 Control.LogDebug(DInfo.ShopInterface, "-- Setup radio set");
                 radio_set.ClearRadioButtons();
+
                 foreach (var pair in Buttons)
                     radio_set.AddButtonToRadioSet(pair.Value.Button);
+
                 radio_set.defaultButton = Buttons.Values.First().Button;
 
                 Control.LogDebug(DInfo.ShopInterface, "-- Replace Buy/Sell buttons");
@@ -404,55 +419,59 @@ namespace CustomShops
                 Control.LogDebug(DInfo.ShopActions, $"--- {num} > {selected.quantity}, adjucting");
                 num = selected.quantity;
             }
-            BuyItem(shop_def, num);
 
 
-            Control.LogDebug(DInfo.ShopActions, $"--- refresh shop");
-            if (!shop_def.IsInfinite)
-                if (num < selected.quantity)
-                {
-                    Control.LogDebug(DInfo.ShopActions, $"---- {num} < {selected.quantity} - reducing");
-                    selected.ModifyQuantity(-num);
-                }
-                else
-                {
-                    
-                    Control.LogDebug(DInfo.ShopActions, $"--- {num} >= {selected.quantity} - removing");
-                    selected.quantity = 1;
-                    ShopHelper.inventoryWidget.RemoveDataItem(selected);
-                    selected.Pool();
-                    ShopHelper.selectedController = null;
-
-                }
-            ShopHelper.inventoryWidget.RefreshInventoryList();
-
-            Control.LogDebug(DInfo.ShopActions, $"--- PlayVO");
-            if (ShopHelper.canPlayVO)
+            if (BuyItem(shop_def, num))
             {
-                ShopHelper.canPlayVO = false;
-                ShopItemType type = shop_def.Type;
-                string text;
-                if (type != ShopItemType.Weapon)
-                {
-                    if (type == ShopItemType.Mech)
+
+                Control.LogDebug(DInfo.ShopActions, $"--- refresh shop");
+                if (!shop_def.IsInfinite)
+                    if (num < selected.quantity)
                     {
-                        text = "store_newmechs";
+                        Control.LogDebug(DInfo.ShopActions, $"---- {num} < {selected.quantity} - reducing");
+                        selected.ModifyQuantity(-num);
                     }
                     else
                     {
-                        text = "store_newequipment";
+
+                        Control.LogDebug(DInfo.ShopActions, $"--- {num} >= {selected.quantity} - removing");
+                        selected.quantity = 1;
+                        ShopHelper.inventoryWidget.RemoveDataItem(selected);
+                        selected.Pool();
+                        ShopHelper.selectedController = null;
+
                     }
-                }
-                else
+
+                Control.LogDebug(DInfo.ShopActions, $"--- PlayVO");
+                if (ShopHelper.canPlayVO)
                 {
-                    text = "store_newweapons";
+                    ShopHelper.canPlayVO = false;
+                    ShopItemType type = shop_def.Type;
+                    string text;
+                    if (type != ShopItemType.Weapon)
+                    {
+                        if (type == ShopItemType.Mech)
+                        {
+                            text = "store_newmechs";
+                        }
+                        else
+                        {
+                            text = "store_newequipment";
+                        }
+                    }
+                    else
+                    {
+                        text = "store_newweapons";
+                    }
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        AudioEventManager.PlayAudioEvent("audioeventdef_simgame_vo_barks", text, WwiseManager.GlobalAudioObject, null);
+                    }
+                    ShopScreen.StartCoroutine(PurchaseVOCooldown(5f));
                 }
-                if (!string.IsNullOrEmpty(text))
-                {
-                    AudioEventManager.PlayAudioEvent("audioeventdef_simgame_vo_barks", text, WwiseManager.GlobalAudioObject, null);
-                }
-                ShopScreen.StartCoroutine(PurchaseVOCooldown(5f));
             }
+
+            ShopHelper.inventoryWidget.RefreshInventoryList();
 
             ShopScreen.UpdateMoneySpot();
             ShopScreen.RefreshAllMoneyListings();
@@ -463,14 +482,14 @@ namespace CustomShops
             ShopHelper.triggerIronManAutoSave = true;
         }
 
-        public static void DefaultPurshase(IDefaultShop shop, ShopDefItem item, int quantity)
+        public static bool DefaultPurshase(IDefaultShop shop, ShopDefItem item, int quantity)
         {
             var ushop = shop.ShopToUse;
             var shop_item = ushop.ActiveInventory.Find((ShopDefItem cachedItem) => cachedItem.ID == item.ID && cachedItem.Type == item.Type);
             if (shop_item == null)
             {
                 Control.LogError($"Shop dont containg {item.ID} to purshase");
-                return;
+                return false;
             }
             if (!item.IsInfinite)
             {
@@ -485,17 +504,18 @@ namespace CustomShops
             Control.State.Sim.AddFunds(-price * quantity, null, true, true);
             for (int i = 0; i < quantity; i++)
                 Control.State.Sim.AddFromShopDefItem(shop_item, false, price, SimGamePurchaseMessage.TransactionType.Purchase);
+            return true;
         }
 
 
-        public static void DefaultPurshase(IListShop shop, ShopDefItem item, int quantity)
+        public static bool DefaultPurshase(IListShop shop, ShopDefItem item, int quantity)
         {
             var list = shop.Items;
             var item_to_buy = list.FirstOrDefault(i => i.IsDamaged == item.IsDamaged && item.ID == i.ID);
             if (item_to_buy == null)
             {
                 Control.LogError($"Cannot find {item.ID} to buy");
-                return;
+                return false;
             }
 
             if (!item_to_buy.IsInfinite)
@@ -511,32 +531,31 @@ namespace CustomShops
             Control.State.Sim.AddFunds(-price, null, true, true);
             for (int i = 0; i < quantity; i++)
                 Control.State.Sim.AddFromShopDefItem(item, false, price, SimGamePurchaseMessage.TransactionType.Purchase);
-
+            return true;
         }
 
-        private static void BuyItem(ShopDefItem item, int quantity)
+        private static bool BuyItem(ShopDefItem item, int quantity)
         {
             Control.LogDebug(DInfo.ShopActions, $"---  BuyItem");
 
             if (ActiveShop is ICustomPurshase cus_shop)
             {
-                cus_shop.Purshase(item, quantity);
+                return cus_shop.Purshase(item, quantity);
             }
             else if (ActiveShop is IDefaultShop def_shop)
             {
                 Control.LogDebug(DInfo.ShopActions, $"---- IDefaultShop");
-                DefaultPurshase(def_shop, item, quantity);
+                return DefaultPurshase(def_shop, item, quantity);
             }
             else if (ActiveShop is IListShop l_shop)
             {
-                DefaultPurshase(l_shop, item, quantity);
+                Control.LogDebug(DInfo.ShopActions, $"---- IListShop");
+                return DefaultPurshase(l_shop, item, quantity);
             }
-            else
-            {
-                Control.LogError("- unknown type of shop, return");
-            }
-            Control.LogDebug(DInfo.ShopActions, $"---- done");
 
+
+            Control.LogError("- unknown type of shop, return");
+            return false;
         }
 
         private static IEnumerator PurchaseVOCooldown(float duration)

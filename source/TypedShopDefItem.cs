@@ -13,6 +13,8 @@ namespace CustomShops
         public MechComponentDef Component { get; private set; }
         public MechDef Mech { get; private set; }
 
+        
+
         public TypedShopDefItem(ShopDefItem item)
         {
             try
@@ -76,10 +78,20 @@ namespace CustomShops
 
                     case ShopItemType.MechPart:
                     case ShopItemType.Mech:
-                        Control.LogDebug(DInfo.TypedItemDef, $"MechPart/Mech {GUID} {ID}");
-                        var id = GUID.Replace("chassisdef", "mechdef");
+                        Control.LogDebug(DInfo.TypedItemDef, item.Type.ToString());
+
+                        var id = Control.GetMDefFromCDef(GUID);
+                           
+
+                        Control.LogDebug(DInfo.TypedItemDef, $"MechPart/Mech {GUID} {ID} {id}");
+
                         if (dm.MechDefs.Exists(id))
                             Mech = dm.MechDefs.Get(id);
+                        else
+                        {
+                            Control.LogError($"Cannot find Mech for {id}");
+                        }
+
                         Description = Type == ShopItemType.MechPart ? Mech.Description : Mech.Chassis.Description;
                         break;
                 }
@@ -91,8 +103,5 @@ namespace CustomShops
                 Control.LogError(e);
             }
         }
-
-
-
     }
 }

@@ -35,6 +35,6 @@ namespace CustomShops
 
     public interface ICustomPurshase
     {
-        void Purshase(ShopDefItem item, int quantity);
+        bool Purshase(ShopDefItem item, int quantity);
     }
 }

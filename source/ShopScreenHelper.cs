@@ -5,6 +5,7 @@ using BattleTech.UI.Tooltips;
 using Harmony;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -156,10 +157,42 @@ namespace CustomShops
 
         internal void ChangeToBuy(IListShop l_shop, bool v)
         {
-            var shop = new Shop(Control.State.Sim, Control.State.CurrentSystem, null, Shop.RefreshType.None, Shop.ShopType.System);
+            bool tort(ShopDefItem item, out BattleTechResourceType result)
+            {
+                switch (item.Type)
+                {
+                    case ShopItemType.Weapon:
+                        result = BattleTechResourceType.WeaponDef;
+                        break;
+                    case ShopItemType.AmmunitionBox:
+                        result = BattleTechResourceType.AmmunitionBoxDef;
+                        break;
+                    case ShopItemType.HeatSink:
+                        result = BattleTechResourceType.HeatSinkDef;
+                        break;
+                    case ShopItemType.JumpJet:
+                        result = BattleTechResourceType.JumpJetDef;
+                        break;
+                    case ShopItemType.Mech:
+                    case ShopItemType.MechPart:
+                        result = BattleTechResourceType.MechDef;
+                        break;
+                    case ShopItemType.Upgrade:
+                        result = BattleTechResourceType.UpgradeDef;
+                        break;
+                    default:
+                        result = BattleTechResourceType.AssetBundle;
+                        return false;
+                }
+
+                return true;
+            }
+
+        var shop = new Shop(Control.State.Sim, Control.State.CurrentSystem, null, Shop.RefreshType.None, Shop.ShopType.System);
             shop.ActiveInventory.Clear();
-            shop.ActiveInventory.AddRange(l_shop.Items);
+            shop.ActiveInventory.AddRange(l_shop.Items.Where(i => tort(i, out var t) && Control.State.Sim.DataManager.Exists(t, i.ID)));
             Screen.ChangeToBuy(shop, true);
         }
+
     }
 }

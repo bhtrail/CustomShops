@@ -22,7 +22,7 @@ namespace CustomShops
         public static int GetPrice(this Shop shop, ShopDefItem item, Shop.PurchaseType purchaseType, Shop.ShopType shopType)
         {
             var price = UIControler.GetPrice(item);
-            Control.LogDebug(DInfo.Price, $"get_price for {item.ID}: {price}");
+            //Control.LogDebug(DInfo.Price, $"get_price for {item.ID}: {price}");
             return price;
         }
 

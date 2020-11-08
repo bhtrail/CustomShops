@@ -24,6 +24,10 @@
 		{
 		  "Type": "Sprite",
 		  "Path": "sprites"
+		},
+		ifest": [
+		{
+		  "Type": "Sprite",
+		  "Path": "sprites"
 		}
-	]
 }

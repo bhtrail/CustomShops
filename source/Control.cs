@@ -94,6 +94,11 @@ namespace CustomShops
             }
         }
 
+        public static string GetMDefFromCDef(string id)
+        {
+            return id.Replace("chassis", "mech");
+        }
+
         private static bool register_shop(IShopDescriptor shop)
         {
             if (shop == null)
@@ -248,8 +253,10 @@ namespace CustomShops
 
         public static void RefreshShops(string Event)
         {
-            if(RefreshEvents.TryGetValue(Event.ToLower(), out Shops))
-                foreach (var shopDescriptor in Shops)
+
+
+            if(RefreshEvents.TryGetValue(Event.ToLower(), out var shops))
+                foreach (var shopDescriptor in shops)
                     shopDescriptor.RefreshShop();
             else
                 LogError($"Unknown Refresh event {Event} requested, skipped");

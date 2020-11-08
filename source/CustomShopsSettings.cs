@@ -44,7 +44,7 @@ namespace CustomShops
 
         public LogLevel LogLevel = LogLevel.Debug;
         public bool AddLogPrefix = false;
-        public DInfo DebugType = DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch | DInfo.ItemGeneration ;
+        public DInfo DebugType = DInfo.ShopInterface | DInfo.SaveLoad | DInfo.RefreshShop | DInfo.TabSwitch | DInfo.ItemGeneration | DInfo.ShowItemList;
         public bool DEBUG_FactionShopAlwaysAvaliable = false;
         public bool DEBUG_BlackMarketAlwaysAvaliable = false;
 
@@ -65,5 +65,7 @@ namespace CustomShops
         public bool ShowConfirm = true;
         public int ConfirmLowLimit = 100000;
         public float FactionShopAdjustment = -0.25f;
+        public bool CheckFakeVehicle = false;
+        public string FakeVehicleTag = "fake_vehicle_chassis";
     }
 }

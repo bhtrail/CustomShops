@@ -64,7 +64,7 @@ namespace CustomShops
 
             return Mathf.CeilToInt(price * (
                 item.IsDamaged
-                ? Control.State.Sim.Constants.Finances.ShopSellDamagedModifier 
+                ? Control.State.Sim.Constants.Finances.ShopSellDamagedModifier
                 : Control.State.Sim.Constants.Finances.ShopSellModifier));
         }
 
@@ -131,7 +131,7 @@ namespace CustomShops
             return false;
         }
 
-        public void Purshase(ShopDefItem item, int quantity)
+        public bool Purshase(ShopDefItem item, int quantity)
         {
             if (item.Type == ShopItemType.Mech)
             {
@@ -139,7 +139,7 @@ namespace CustomShops
                 if (shop_item == null)
                 {
                     Control.LogError($"Shop dont containg {item.ID} to purshase");
-                    return;
+                    return false;
                 }
                 if (!item.IsInfinite)
                 {
@@ -156,9 +156,11 @@ namespace CustomShops
 
                 for (int i = 0; i < quantity; i++)
                     Control.State.Sim.AddItemStat(mech.Chassis.Description.Id, mech.GetType(), false);
+                return true;
             }
-            else
-                UIControler.DefaultPurshase(this, item, quantity);
+
+            return UIControler.DefaultPurshase(this, item, quantity);
         }
+
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Harmony;
 using BattleTech;
 using BattleTech.UI;
+using UnityEngine.Events;
 
 namespace CustomShops
 {
