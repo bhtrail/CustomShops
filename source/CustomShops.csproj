@@ -103,6 +103,7 @@
     <Compile Include="Control.cs" />
     <Compile Include="CustomShopsSettings.cs" />
     <Compile Include="DEBUG_Patches\ItemCollectionResultGenerator_GenerateItemCollection.cs" />
+    <Compile Include="Interfaces\IForceRefresh.cs" />
     <Compile Include="Interfaces\IPriceInterfaces.cs" />
     <Compile Include="Interfaces\IShopDescription.cs" />
     <Compile Include="Interfaces\SaleInterfaces.cs" />

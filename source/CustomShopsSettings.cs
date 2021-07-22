@@ -67,5 +67,6 @@ namespace CustomShops
         public float FactionShopAdjustment = -0.25f;
         public bool CheckFakeVehicle = false;
         public string FakeVehicleTag = "fake_vehicle_chassis";
+        public bool NoDiscountOnLoan { get; set; } = false;
     }
 }

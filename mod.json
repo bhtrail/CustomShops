@@ -3,7 +3,7 @@
 	"Author": "Denadan",
 	"Website": "https://github.com/BattletechModders/CustomShops",
 
-	"Enabled": true,
+	"Enabled": false,
 	"DependsOn": [],
 	"DLL": "CustomShops.dll",
 	"DLLEntryPoint": "CustomShops.Control.Init",
@@ -25,9 +25,5 @@
 		  "Type": "Sprite",
 		  "Path": "sprites"
 		},
-		ifest": [
-		{
-		  "Type": "Sprite",
-		  "Path": "sprites"
-		}
+	]
 }

@@ -80,13 +80,14 @@ namespace CustomShops
                 ShopToUse = new Shop();
                 shopT = new Traverse(ShopToUse);
             }
-
+            
             shopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
             shopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
             if (ShopToUse.ItemCollections == null)
                 shopT.Property<List<ItemCollectionDef>>("ItemCollections").Value = new List<ItemCollectionDef>();
             else
                 ShopToUse.ItemCollections.Clear();
+            ShopToUse.ActiveInventory.Clear();
         }
 
         public void SetLoadedShop(Shop shop)

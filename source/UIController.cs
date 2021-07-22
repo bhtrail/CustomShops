@@ -141,7 +141,9 @@ namespace CustomShops
             else
                 Control.LogError("Unknown shop type, cannot get price for " + item.ID);
 
-            if (UIControler.ActiveShop is IDiscountFromFaction faction_discount)
+            if (Control.Settings.NoDiscountOnLoan && price < 0)
+                discount = 1;
+            else if (UIControler.ActiveShop is IDiscountFromFaction faction_discount)
                 discount = 1 + Control.State.Sim.GetReputationShopAdjustment(faction_discount.RelatedFaction);
             else if (UIControler.ActiveShop is INoDiscount)
                 discount = 1;
@@ -424,23 +426,31 @@ namespace CustomShops
             if (BuyItem(shop_def, num))
             {
 
-                Control.LogDebug(DInfo.ShopActions, $"--- refresh shop");
-                if (!shop_def.IsInfinite)
-                    if (num < selected.quantity)
-                    {
-                        Control.LogDebug(DInfo.ShopActions, $"---- {num} < {selected.quantity} - reducing");
-                        selected.ModifyQuantity(-num);
-                    }
-                    else
-                    {
+                if (ActiveShop is IForceRefresh)
+                {
+                    Control.LogDebug(DInfo.ShopActions, $"--- refresh shop - forced reload");
+                    ForceRefresh();
+                }
+                else
+                {
+                    Control.LogDebug(DInfo.ShopActions, $"--- refresh shop - default");
+                    if (!shop_def.IsInfinite)
+                        if (num < selected.quantity)
+                        {
+                            Control.LogDebug(DInfo.ShopActions, $"---- {num} < {selected.quantity} - reducing");
+                            selected.ModifyQuantity(-num);
+                        }
+                        else
+                        {
 
-                        Control.LogDebug(DInfo.ShopActions, $"--- {num} >= {selected.quantity} - removing");
-                        selected.quantity = 1;
-                        ShopHelper.inventoryWidget.RemoveDataItem(selected);
-                        selected.Pool();
-                        ShopHelper.selectedController = null;
+                            Control.LogDebug(DInfo.ShopActions, $"--- {num} >= {selected.quantity} - removing");
+                            selected.quantity = 1;
+                            ShopHelper.inventoryWidget.RemoveDataItem(selected);
+                            selected.Pool();
+                            ShopHelper.selectedController = null;
 
-                    }
+                        }
+                }
 
                 Control.LogDebug(DInfo.ShopActions, $"--- PlayVO");
                 if (ShopHelper.canPlayVO)
@@ -528,7 +538,7 @@ namespace CustomShops
 
             int price = GetPrice(item);
 
-            Control.State.Sim.AddFunds(-price, null, true, true);
+            Control.State.Sim.AddFunds(-price * quantity, null, true, true);
             for (int i = 0; i < quantity; i++)
                 Control.State.Sim.AddFromShopDefItem(item, false, price, SimGamePurchaseMessage.TransactionType.Purchase);
             return true;
@@ -646,5 +656,11 @@ namespace CustomShops
 
             ShopHelper.FillInWidget(shop);
         }
+
+        public static void ForceRefresh()
+        {
+            SwitchAndInit(ActiveShop);
+        }
+
     }
 }

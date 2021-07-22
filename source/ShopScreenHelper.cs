@@ -188,11 +188,14 @@ namespace CustomShops
                 return true;
             }
 
-        var shop = new Shop(Control.State.Sim, Control.State.CurrentSystem, null, Shop.RefreshType.None, Shop.ShopType.System);
-            shop.ActiveInventory.Clear();
-            shop.ActiveInventory.AddRange(l_shop.Items.Where(i => tort(i, out var t) && Control.State.Sim.DataManager.Exists(t, i.ID)));
-            Screen.ChangeToBuy(shop, true);
+            var shop = new Shop(Control.State.Sim, Control.State.CurrentSystem, null, Shop.RefreshType.None, Shop.ShopType.System);
+                shop.ActiveInventory.Clear();
+                shop.ActiveInventory.AddRange(l_shop.Items.Where(i => tort(i, out var t) && Control.State.Sim.DataManager.Exists(t, i.ID)));
+                Screen.ChangeToBuy(shop, true);
         }
 
+
     }
+
+
 }

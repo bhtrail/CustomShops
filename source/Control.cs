@@ -60,7 +60,7 @@ namespace CustomShops
                 var harmony = HarmonyInstance.Create($"{ModName}");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 Logger.Log("=========================================================");
-                Logger.Log($"Loaded {ModName} v0.3.1 for bt 1.9");
+                Logger.Log($"Loaded {ModName} v0.3.2 for bt 1.9");
                 Logger.Log("=========================================================");
                 Logger.LogDebug("done");
                 Logger.LogDebug(JSONSerializationUtility.ToJSON(Settings));
