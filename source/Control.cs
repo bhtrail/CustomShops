@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using BattleTech;
 using BattleTech.UI;
+using CustomShops.Patches;
 using HBS.Logging;
 using HBS.Util;
 using CustomShops.Shops;
@@ -57,8 +58,8 @@ namespace CustomShops
                 SetupLogging(directory);
 
 
-                var harmony = HarmonyInstance.Create($"{ModName}");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
+                HarmonyInit();
+
                 Logger.Log("=========================================================");
                 Logger.Log($"Loaded {ModName} v0.3.2 for bt 1.9");
                 Logger.Log("=========================================================");
@@ -92,6 +93,40 @@ namespace CustomShops
             {
                 Logger.LogError(e);
             }
+        }
+
+        private static void HarmonyInit()
+        {
+            var harmony = HarmonyInstance.Create($"{ModName}");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            var appdomain = AppDomain.CurrentDomain;
+            var assmbls = appdomain.GetAssemblies();
+            var irt = assmbls.FirstOrDefault(i => i.GetName().Name == "IRTweaks");
+            if (irt == null)
+            {
+                Control.Log("No IRTweaks found, usual shop button");
+                var method_base = AccessTools.Method(typeof(SGNavigationButton), "ManageShopFlyout");
+                var method_new = new HarmonyMethod(typeof(SGNavigationButton_ManageShopFlyout), "ShowButton");
+                harmony.Patch(method_base, method_new);
+            }
+            else
+            {
+                Control.Log("IRTweaks found, patching");
+                var refresh_patch =
+                    irt.GetTypes().FirstOrDefault(i => i.Name == "SGNavigationList_RefreshButtonStates");
+                if (refresh_patch == null)
+                {
+                    Control.LogError("Cannot find IRTweak class to patch");
+                    return;
+                }
+
+                var method_base = AccessTools.Method(refresh_patch, "IsShopActive");
+                var method_new = new HarmonyMethod(typeof(IsShopActive), "ShowButton");
+                harmony.Patch(method_base, method_new);
+                
+            }
+            Control.Log("Patched");
         }
 
         public static string GetMDefFromCDef(string id)
@@ -255,7 +290,7 @@ namespace CustomShops
         {
 
 
-            if(RefreshEvents.TryGetValue(Event.ToLower(), out var shops))
+            if (RefreshEvents.TryGetValue(Event.ToLower(), out var shops))
                 foreach (var shopDescriptor in shops)
                     shopDescriptor.RefreshShop();
             else

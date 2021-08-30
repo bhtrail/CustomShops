@@ -107,6 +107,7 @@
     <Compile Include="Interfaces\IPriceInterfaces.cs" />
     <Compile Include="Interfaces\IShopDescription.cs" />
     <Compile Include="Interfaces\SaleInterfaces.cs" />
+    <Compile Include="Patches\SGNavigationButton_ManageShopFlyout.cs" />
     <Compile Include="Patches\SG_Shop_Screen_ReceiveButtonPress.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Interfaces\IconInterfaces.cs" />
