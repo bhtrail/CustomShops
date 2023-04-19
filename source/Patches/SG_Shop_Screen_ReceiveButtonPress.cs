@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BattleTech.UI;
-using Harmony;
 
 namespace CustomShops.DEBUG_Patches
 {
@@ -19,9 +18,16 @@ namespace CustomShops.DEBUG_Patches
             "ShopTypeBlackMarket"
         };
 
-        public static bool Prefix(string button)
+        public static void Prefix(ref bool __runOriginal, string button)
         {
-            return !skip.Contains(button);
+            if (!__runOriginal) return;
+            if(skip.Contains(button))
+            {
+                __runOriginal = false;
+                return;
+            }
+            __runOriginal = true;
+            return;
         }
     }
 

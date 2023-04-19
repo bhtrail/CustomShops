@@ -2,7 +2,6 @@
 using BattleTech.UI;
 using BattleTech.UI.TMProWrapper;
 using BattleTech.UI.Tooltips;
-using Harmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace CustomShops
     {
         public delegate void SetSpriteDelegate(Sprite sprite);
 
-        public Traverse Main { get; private set; }
+        //public Traverse Main { get; private set; }
         public SG_Shop_Screen Screen { get; private set; }
         public  MiniFactionPanelHelper MiniWidgetHelper { get; private set; }
 
@@ -38,60 +37,78 @@ namespace CustomShops
         public HBSDOTweenToggle SellTabButton { get; private set; }
         public MechLabInventoryWidget_ListView inventoryWidget { get; private set; }
 
-        private Traverse<bool> T_isInBuyingState;
+        //private Traverse<bool> T_isInBuyingState;
         public bool isInBuyingState
         {
-            get => T_isInBuyingState.Value;
-            set => T_isInBuyingState.Value = value;
+            get => Screen.isInBuyingState;//T_isInBuyingState.Value);
+            set => Screen.isInBuyingState = value; //T_isInBuyingState.Value = value;
         }
-        private Traverse<InventoryDataObject_SHOP> T_selectedController;
+        //private Traverse<InventoryDataObject_SHOP> T_selectedController;
         public InventoryDataObject_SHOP selectedController
         {
-            get => T_selectedController.Value;
-            set => T_selectedController.Value = value;
+            get => Screen.selectedController; //T_selectedController.Value;
+            set => Screen.selectedController = value; //T_selectedController.Value = value;
         }
-        private Traverse<bool> T_canPlayVO;
+        //private Traverse<bool> T_canPlayVO;
         public bool canPlayVO
         {
-            get => T_canPlayVO.Value;
-            set => T_canPlayVO.Value = value;
+            get => Screen.canPlayVO; //T_canPlayVO.Value;
+            set => Screen.canPlayVO = value; //T_canPlayVO.Value = value;
         }
-        private Traverse<bool> T_triggerIronManAutoSave;
+        //private Traverse<bool> T_triggerIronManAutoSave;
         public bool triggerIronManAutoSave
         {
-            get => T_triggerIronManAutoSave.Value;
-            set => T_triggerIronManAutoSave.Value = value;
+            get => Screen.triggerIronManAutoSave; //T_triggerIronManAutoSave.Value;
+            set => Screen.triggerIronManAutoSave = value; //T_triggerIronManAutoSave.Value = value;
         }
-
 
         public ShopScreenHelper(SG_Shop_Screen screen)
         {
             Screen = screen;
-            Main = new Traverse(Screen);
+            //Main = new Traverse(Screen);
 
-            SystemStoreButtonHoldingObject = Main.Field<GameObject>("SystemStoreButtonHoldingObject").Value;
-            BlackMarketStoreButtonHoldingObject = Main.Field<GameObject>("BlackMarketStoreButtonHoldingObject").Value;
-            FactionStoreButtonHoldingObject = Main.Field<GameObject>("FactionStoreButtonHoldingObject").Value;
-            SystemStoreButton = Main.Field<HBSDOTweenStoreTypeToggle>("SystemStoreButton").Value;
-            SimGame = Main.Field<SimGameState>("simState").Value;
-            ColorAffectors = Main.Field<List<UIColorRefTracker>>("ColorAffectors").Value;
-            LargeBGFillColor = Main.Field<UIColorRefTracker>("LargeBGFillColor").Value;
-            var StoreImagePanel = Main.Field("StoreImagePanel");
-            miniFactionWidget = StoreImagePanel.Field<SG_Stores_MiniFactionWidget>("miniFactionWidget").Value;
+            //SystemStoreButtonHoldingObject = Main.Field<GameObject>("SystemStoreButtonHoldingObject").Value;
+            SystemStoreButtonHoldingObject = Screen.SystemStoreButtonHoldingObject;
+            //BlackMarketStoreButtonHoldingObject = Main.Field<GameObject>("BlackMarketStoreButtonHoldingObject").Value;
+            BlackMarketStoreButtonHoldingObject = Screen.BlackMarketStoreButtonHoldingObject;
+            //FactionStoreButtonHoldingObject = Main.Field<GameObject>("FactionStoreButtonHoldingObject").Value;
+            FactionStoreButtonHoldingObject = Screen.FactionStoreButtonHoldingObject;
+            //SystemStoreButton = Main.Field<HBSDOTweenStoreTypeToggle>("SystemStoreButton").Value;
+            SystemStoreButton = Screen.SystemStoreButton;
+            //SimGame = Main.Field<SimGameState>("simState").Value;
+            SimGame = Screen.simState;
+            //ColorAffectors = Main.Field<List<UIColorRefTracker>>("ColorAffectors").Value;
+            ColorAffectors = Screen.ColorAffectors;
+            //LargeBGFillColor = Main.Field<UIColorRefTracker>("LargeBGFillColor").Value;
+            LargeBGFillColor = Screen.LargeBGFillColor;
+            //var StoreImagePanel = Main.Field("StoreImagePanel");
+            
+            //miniFactionWidget = StoreImagePanel.Field<SG_Stores_MiniFactionWidget>("miniFactionWidget").Value;
+            miniFactionWidget = Screen.StoreImagePanel.miniFactionWidget;
             MiniWidgetHelper = new MiniFactionPanelHelper(miniFactionWidget);
-            CurrSystemText = StoreImagePanel.Field<LocalizableText>("CurrSystemText").Value;
-            StoreImage = StoreImagePanel.Field<Image>("StoreImage").Value;
-            PlanetToolitp = StoreImagePanel.Field<HBSTooltip>("PlanetToolitp").Value;
-            T_isInBuyingState = Main.Field<bool>("isInBuyingState");
 
-            T_selectedController = Main.Field<InventoryDataObject_SHOP>("selectedController");
-            T_canPlayVO = Main.Field<bool>("canPlayVO");
-            T_triggerIronManAutoSave = Main.Field<bool>("triggerIronManAutoSave");
-
-            BuyButton = Main.Field<HBSDOTweenButton>("BuyButton").Value;
-            SellTabButton = Main.Field<HBSDOTweenToggle>("SellTabButton").Value;
-            BuyTabButton = Main.Field<HBSDOTweenToggle>("BuyTabButton").Value;
-            inventoryWidget = Main.Field<MechLabInventoryWidget_ListView>("inventoryWidget").Value;
+            //CurrSystemText = StoreImagePanel.Field<LocalizableText>("CurrSystemText").Value;
+            CurrSystemText = Screen.StoreImagePanel.CurrSystemText;
+            //StoreImage = StoreImagePanel.Field<Image>("StoreImage").Value;
+            StoreImage = Screen.StoreImagePanel.StoreImage;
+            //PlanetToolitp = StoreImagePanel.Field<HBSTooltip>("PlanetToolitp").Value;
+            PlanetToolitp = Screen.StoreImagePanel.PlanetToolitp;
+            //T_isInBuyingState = Main.Field<bool>("isInBuyingState");
+            isInBuyingState = Screen.isInBuyingState;
+            //T_selectedController = Main.Field<InventoryDataObject_SHOP>("selectedController");
+            selectedController = Screen.selectedController;
+            //T_canPlayVO = Main.Field<bool>("canPlayVO");
+            canPlayVO = Screen.canPlayVO;
+            //T_triggerIronManAutoSave = Main.Field<bool>("triggerIronManAutoSave");
+            triggerIronManAutoSave = Screen.triggerIronManAutoSave;
+            //BuyButton = Main.Field<HBSDOTweenButton>("BuyButton").Value;
+            BuyButton = Screen.BuyButton;
+            //SellTabButton = Main.Field<HBSDOTweenToggle>("SellTabButton").Value;
+            SellTabButton = Screen.SellTabButton;
+            //BuyTabButton = Main.Field<HBSDOTweenToggle>("BuyTabButton").Value;
+            BuyTabButton = Screen.BuyTabButton;
+            //inventoryWidget = Main.Field<MechLabInventoryWidget_ListView>("inventoryWidget").Value;
+            inventoryWidget = Screen.inventoryWidget;
         }
 
         public void FillInWidget(IShopDescriptor shop)

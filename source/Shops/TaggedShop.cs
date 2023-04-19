@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using BattleTech;
 using UnityEngine;
-using Harmony;
 
 namespace CustomShops
 {
@@ -22,7 +21,7 @@ namespace CustomShops
 
         public List<string> Tags { get; set; }
         public Shop Shop { get; set; }
-        public Traverse ShopT;
+        //public Traverse ShopT;
 
         public Shop ShopToUse => Shop;
 
@@ -38,7 +37,7 @@ namespace CustomShops
             if (Shop == null)
             {
                 Shop = new Shop();
-                ShopT = new Traverse(Shop);
+                //ShopT = new Traverse(Shop);
             }
 
 #if CCDEBUG
@@ -50,10 +49,13 @@ namespace CustomShops
             else
                 Control.LogDebug(DInfo.RefreshShop, "-- Empty");
 #endif
-            ShopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
-            ShopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
+            //ShopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
+            Shop.Sim = UnityGameInstance.BattleTechGame.Simulation;
+            //ShopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
+            Shop.system = Control.State.CurrentSystem;
             if (Shop.ItemCollections == null)
-                ShopT.Property<List<ItemCollectionDef>>("ItemCollections").Value = new List<ItemCollectionDef>();
+                Shop.ItemCollections = new List<ItemCollectionDef>();
+                //ShopT.Property<List<ItemCollectionDef>>("ItemCollections").Value = new List<ItemCollectionDef>();
             else
                 Shop.ItemCollections.Clear();
 
@@ -90,7 +92,7 @@ namespace CustomShops
             Shop = shop;
             if (shop != null)
             {
-                ShopT = new Traverse(Shop);
+                //ShopT = new Traverse(Shop);
                 Shop.Rehydrate(Control.State.Sim, Control.State.CurrentSystem, Tags, Shop.RefreshType.None, Shop.ShopType.System);
             }
             else

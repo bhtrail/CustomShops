@@ -1,5 +1,4 @@
-﻿using Harmony;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -97,8 +96,9 @@ namespace CustomShops
 
         private static void HarmonyInit()
         {
-            var harmony = HarmonyInstance.Create($"{ModName}");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            var harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), ModName);
+            //var harmony = HarmonyInstance.Create($"{ModName}");
+            //harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             var appdomain = AppDomain.CurrentDomain;
             var assmbls = appdomain.GetAssemblies();

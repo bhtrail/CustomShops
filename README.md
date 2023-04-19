@@ -1,5 +1,7 @@
 # CustomShops
 
+**v1.1.0.0 and higher requires modtek v3 or higher**
+
 CustomShops - Mod that allow create and manage shops, taking all ui and other "backstage" work 
 
 Also it add some optional features, like BuyBack shop and MultiBuy to vanila shops
