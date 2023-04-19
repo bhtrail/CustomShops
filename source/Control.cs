@@ -44,7 +44,6 @@ namespace CustomShops
                 {
                     Settings = new CustomShopsSettings();
                     JSONSerializationUtility.FromJSON(Settings, settingsJSON);
-                    HBS.Logging.Logger.SetLoggerLevel(Logger.Name, Settings.LogLevel);
                 }
                 catch (Exception)
                 {
@@ -53,9 +52,6 @@ namespace CustomShops
 
                 if (!Settings.AddLogPrefix)
                     LogPrefix = "";
-
-                SetupLogging(directory);
-
 
                 HarmonyInit();
 
@@ -97,8 +93,6 @@ namespace CustomShops
         private static void HarmonyInit()
         {
             var harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), ModName);
-            //var harmony = HarmonyInstance.Create($"{ModName}");
-            //harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             var appdomain = AppDomain.CurrentDomain;
             var assmbls = appdomain.GetAssemblies();

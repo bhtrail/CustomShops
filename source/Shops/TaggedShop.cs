@@ -37,7 +37,6 @@ namespace CustomShops
             if (Shop == null)
             {
                 Shop = new Shop();
-                //ShopT = new Traverse(Shop);
             }
 
 #if CCDEBUG
@@ -49,13 +48,10 @@ namespace CustomShops
             else
                 Control.LogDebug(DInfo.RefreshShop, "-- Empty");
 #endif
-            //ShopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
             Shop.Sim = UnityGameInstance.BattleTechGame.Simulation;
-            //ShopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
             Shop.system = Control.State.CurrentSystem;
             if (Shop.ItemCollections == null)
                 Shop.ItemCollections = new List<ItemCollectionDef>();
-                //ShopT.Property<List<ItemCollectionDef>>("ItemCollections").Value = new List<ItemCollectionDef>();
             else
                 Shop.ItemCollections.Clear();
 
@@ -92,7 +88,6 @@ namespace CustomShops
             Shop = shop;
             if (shop != null)
             {
-                //ShopT = new Traverse(Shop);
                 Shop.Rehydrate(Control.State.Sim, Control.State.CurrentSystem, Tags, Shop.RefreshType.None, Shop.ShopType.System);
             }
             else
