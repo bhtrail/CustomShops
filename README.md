@@ -1,5 +1,8 @@
 # CustomShops
 
+**v1.1.0.0 and higher requires modtek v3 or higher**
+**LogLevel in mod.json has been deprecated. Please set logging level using AdvancedJsonMerge, or by adding setting for `CustomShops` to your modpacks HBS debug settings.json.
+
 CustomShops - Mod that allow create and manage shops, taking all ui and other "backstage" work 
 
 Also it add some optional features, like BuyBack shop and MultiBuy to vanila shops

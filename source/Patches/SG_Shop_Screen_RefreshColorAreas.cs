@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Harmony;
 using BattleTech;
 using BattleTech.UI;
 
@@ -14,10 +13,12 @@ namespace CustomShops.Patches
     public static class SG_Shop_Screen_RefreshColorAreas
     {
         [HarmonyPrefix]
-        public static bool Prefix()
+        public static void Prefix(ref bool __runOriginal)
         {
+            if (!__runOriginal) return;
             UIControler.RefreshColors(UIControler.ActiveShop);
-            return false;
+            __runOriginal = false;
+            return;
         }
     }
 }

@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 using BattleTech;
 using UnityEngine;
 using BattleTech.UI;
-using Harmony;
 
 namespace CustomShops
 {
     public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFillWidget, ITextIcon, INoDiscount, ICustomPrice, ISellShop, ICustomPurshase
     {
-        private Traverse shopT;
         private Color PanelColor = new Color(0, 0.2f, 0);
 
         public Shop ShopToUse { get; private set; }
@@ -78,13 +76,12 @@ namespace CustomShops
             if (ShopToUse == null)
             {
                 ShopToUse = new Shop();
-                shopT = new Traverse(ShopToUse);
             }
             
-            shopT.Field<SimGameState>("Sim").Value = UnityGameInstance.BattleTechGame.Simulation;
-            shopT.Field<StarSystem>("system").Value = Control.State.CurrentSystem;
+            ShopToUse.Sim = UnityGameInstance.BattleTechGame.Simulation;
+            ShopToUse.system = Control.State.CurrentSystem;
             if (ShopToUse.ItemCollections == null)
-                shopT.Property<List<ItemCollectionDef>>("ItemCollections").Value = new List<ItemCollectionDef>();
+                ShopToUse.ItemCollections = new List<ItemCollectionDef>();
             else
                 ShopToUse.ItemCollections.Clear();
             ShopToUse.ActiveInventory.Clear();
@@ -93,7 +90,6 @@ namespace CustomShops
         public void SetLoadedShop(Shop shop)
         {
             this.ShopToUse = shop;
-            shopT = new Traverse(ShopToUse);
         }
 
         private void AddItemToShop(ShopDefItem item, int count)
