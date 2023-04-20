@@ -37,17 +37,9 @@
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Framework\**" />
-    <EmbeddedResource Remove="Framework\**" />
-    <None Remove="Framework\**" />
-  </ItemGroup>
-  <ItemGroup>
+	<ItemGroup>
     <PackageReference Include="Krafs.Publicizer" Version="2.2.1" />
     <Publicize Include="Assembly-CSharp" />
-	    <Publicize Include="Assembly-CSharp-firstpass" />
-    <Publicize Include="CustomActivatableEquipment" />
-    <Publicize Include="CustomUnits" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HarmonyX" Version="2.10.1">
@@ -56,18 +48,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-	<Reference Include="CustomActivatableEquipment">
-      <HintPath>$(CustomShopsModPath)\..\CustomActivatableEquipment\CustomActivatableEquipment.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-	<Reference Include="CustomUnits">
-      <HintPath>$(CustomShopsModPath)\..\CustomUnits\CustomUnits.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
-      <Private>False</Private>
-    </Reference>
-	<Reference Include="Assembly-CSharp-firstpass">
       <Private>False</Private>
     </Reference>
 	<Reference Include="InControl">

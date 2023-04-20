@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BattleTech;
-using System.Reflection;
-
-namespace CustomShops.DEBUG_Patches
+﻿namespace CustomShops.DEBUG_Patches
 {
 #if CCDEBUG
     [HarmonyPatch(typeof(ItemCollectionResultGenerator))]

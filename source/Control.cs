@@ -4,13 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using BattleTech;
 using BattleTech.UI;
 using CustomShops.Patches;
 using HBS.Logging;
 using HBS.Util;
 using CustomShops.Shops;
-using Localize;
 
 namespace CustomShops
 {

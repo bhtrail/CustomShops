@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using BattleTech;
-using BattleTech.UI;
 using HBS.Logging;
-using UnityEngine;
 
 namespace CustomShops
 {
