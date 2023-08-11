@@ -1,10 +1,9 @@
 ﻿using BattleTech;
 
-namespace CustomShops
+namespace CustomShops;
+
+public interface ISaveShop
 {
-    public interface ISaveShop
-    {
-        Shop GetShopToSave();
-        void SetLoadedShop(Shop shop);
-    }
+    Shop GetShopToSave();
+    void SetLoadedShop(Shop shop);
 }

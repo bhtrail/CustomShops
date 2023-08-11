@@ -1,16 +1,15 @@
 ﻿using BattleTech;
 using BattleTech.UI;
 
-namespace CustomShops
+namespace CustomShops;
+
+[HarmonyPatch(typeof(SG_Shop_Screen))]
+[HarmonyPatch("AddShopItemToWidget")]
+public static class SH_Shop_Screen_AddShopItemToWidget
 {
-    [HarmonyPatch(typeof(SG_Shop_Screen))]
-    [HarmonyPatch("AddShopItemToWidget")]
-    public static class SH_Shop_Screen_AddShopItemToWidget
+    [HarmonyPrefix]
+    public static void ReplaceShopDefItem(ref ShopDefItem itemDef)
     {
-        [HarmonyPrefix]
-        public static void ReplaceShopDefItem(ref ShopDefItem itemDef)
-        {
-            itemDef = new TypedShopDefItem(itemDef);
-        }
+        itemDef = new TypedShopDefItem(itemDef);
     }
 }

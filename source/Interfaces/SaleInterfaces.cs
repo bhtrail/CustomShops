@@ -1,10 +1,9 @@
 ﻿using BattleTech;
 
-namespace CustomShops
+namespace CustomShops;
+
+public interface ISellShop
 {
-    public interface ISellShop
-    {
-        public int SellPriority { get; }
-        public bool OnSellItem(ShopDefItem item, int num);
-    }
+    public int SellPriority { get; }
+    public bool OnSellItem(ShopDefItem item, int num);
 }

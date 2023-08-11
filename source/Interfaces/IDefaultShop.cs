@@ -1,9 +1,8 @@
 ﻿using BattleTech;
 
-namespace CustomShops
+namespace CustomShops;
+
+public interface IDefaultShop
 {
-    public interface IDefaultShop
-    {
-        Shop ShopToUse { get; }
-    }
+    Shop ShopToUse { get; }
 }

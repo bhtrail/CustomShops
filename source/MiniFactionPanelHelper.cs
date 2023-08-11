@@ -4,28 +4,27 @@ using BattleTech.UI.Tooltips;
 
 using UnityEngine.UI;
 
-namespace CustomShops
+namespace CustomShops;
+
+public class MiniFactionPanelHelper
 {
-    public class MiniFactionPanelHelper
+    public SG_Stores_MiniFactionWidget Widget { get; private set; }
+    public Image FactionIcon { get; private set; }
+    public HBSTooltip FactionTooltip { get; private set; }
+    public SGReputationRatingIcon ratingIcon { get; private set; }
+    public LocalizableText ReputationBonusText { get; private set; }
+
+    public MiniFactionPanelHelper(SG_Stores_MiniFactionWidget widget)
     {
-        public SG_Stores_MiniFactionWidget Widget { get; private set; }
-        public Image FactionIcon { get; private set; }
-        public HBSTooltip FactionTooltip { get; private set; }
-        public SGReputationRatingIcon ratingIcon { get; private set; }
-        public LocalizableText ReputationBonusText { get; private set; }
+        Widget = widget;
+        FactionIcon = Widget.FactionIcon;
+        FactionTooltip = widget.FactionTooltip;
+        ratingIcon = widget.ratingIcon;
+        ReputationBonusText = widget.ReputationBonusText;
+    }
 
-        public MiniFactionPanelHelper(SG_Stores_MiniFactionWidget widget)
-        {
-            Widget = widget;
-            FactionIcon = Widget.FactionIcon;
-            FactionTooltip = widget.FactionTooltip;
-            ratingIcon = widget.ratingIcon;
-            ReputationBonusText = widget.ReputationBonusText;
-        }
-
-        public void HideRatingIcons()
-        {
-            ratingIcon.HideAllIcons();
-        }
+    public void HideRatingIcons()
+    {
+        ratingIcon.HideAllIcons();
     }
 }

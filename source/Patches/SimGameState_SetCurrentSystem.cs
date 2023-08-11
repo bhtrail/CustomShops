@@ -1,16 +1,15 @@
 ﻿using BattleTech;
 
-namespace CustomShops.Patches
-{
+namespace CustomShops.Patches;
 
-    [HarmonyPatch(typeof(SimGameState))]
-    [HarmonyPatch("SetCurrentSystem")]
-    public static class SimGameState_SetCurrentSystem
+
+[HarmonyPatch(typeof(SimGameState))]
+[HarmonyPatch("SetCurrentSystem")]
+public static class SimGameState_SetCurrentSystem
+{
+    [HarmonyPrefix]
+    public static void UpdateSystem(StarSystem system)
     {
-        [HarmonyPrefix]
-        public static void UpdateSystem(StarSystem system)
-        {
-            Control.State.CurrentSystem = system;
-        }
+        Control.State.CurrentSystem = system;
     }
 }

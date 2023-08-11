@@ -1,15 +1,14 @@
 ﻿using BattleTech;
 
-namespace CustomShops.Patches
+namespace CustomShops.Patches;
+
+[HarmonyPatch(typeof(StarSystem))]
+[HarmonyPatch("Rehydrate")]
+public static class StarSystem_Rehydrate
 {
-    [HarmonyPatch(typeof(StarSystem))]
-    [HarmonyPatch("Rehydrate")]
-    public static class StarSystem_Rehydrate
+    [HarmonyPrefix]
+    public static void OverrideLoadShops(ref bool loadShops)
     {
-        [HarmonyPrefix]
-        public static void OverrideLoadShops(ref bool loadShops)
-        {
-            loadShops = false;
-        }
+        loadShops = false;
     }
 }

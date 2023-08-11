@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 
-namespace CustomShops
-{
-    public interface ISpriteIcon
-    {
-        Sprite Sprite { get; }
-    }
+namespace CustomShops;
 
-    public interface ITextIcon
-    {
-        string SpriteID { get; }
-    }
+public interface ISpriteIcon
+{
+    Sprite Sprite { get; }
+}
+
+public interface ITextIcon
+{
+    string SpriteID { get; }
 }

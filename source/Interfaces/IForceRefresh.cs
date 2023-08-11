@@ -1,7 +1,6 @@
-﻿namespace CustomShops
+﻿namespace CustomShops;
+
+public interface IForceRefresh
 {
-    public interface IForceRefresh
-    {
-        
-    }
+    
 }
