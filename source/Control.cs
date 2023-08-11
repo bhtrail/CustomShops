@@ -18,16 +18,16 @@ public static class Control
 {
     private const string ModName = "CustomShops";
     private static string LogPrefix = "[CShops] ";
-    public static CustomShopsSettings Settings = new CustomShopsSettings();
+    public static CustomShopsSettings Settings = new();
 
     public static GameState State { get; private set; }
 
     private static ILog Logger;
     private static FileLogAppender logAppender;
 
-    internal static List<IShopDescriptor> Shops = new List<IShopDescriptor>();
+    internal static List<IShopDescriptor> Shops = new();
 
-    internal static List<ISellShop> SaleShops = new List<ISellShop>();
+    internal static List<ISellShop> SaleShops = new();
 
     private static Dictionary<string, List<IShopDescriptor>> RefreshEvents;
 
@@ -137,14 +137,14 @@ public static class Control
         return id.Replace("chassis", "mech");
     }
 
-    private static bool register_shop(IShopDescriptor shop)
+    private static bool RegisterShopImpl(IShopDescriptor shop)
     {
         if (shop == null)
         {
             return false;
         }
 
-        Log($"Shop [{shop.Name}] registred");
+        Log($"Shop [{shop.Name}] registered");
         Shops.Add(shop);
 
         if (shop is ISellShop ss)
@@ -160,7 +160,7 @@ public static class Control
     [Obsolete]
     public static void RegisterShop(IShopDescriptor shop)
     {
-        if (register_shop(shop))
+        if (RegisterShopImpl(shop))
         {
             if (shop.RefreshOnMonthChange)
             {
@@ -182,7 +182,7 @@ public static class Control
 
     public static void RegisterShop(IShopDescriptor shop, IEnumerable<string> refresh_events)
     {
-        if (register_shop(shop) && refresh_events != null)
+        if (RegisterShopImpl(shop) && refresh_events != null)
         {
             foreach (var name in refresh_events)
             {
@@ -285,7 +285,7 @@ public static class Control
         var n = Event.ToLower();
         if (RefreshEvents.ContainsKey(n))
         {
-            LogError($"Refresh event {Event} already registred");
+            LogError($"Refresh event {Event} already registered");
             return;
         }
         RefreshEvents[n] = new List<IShopDescriptor>();
@@ -297,7 +297,7 @@ public static class Control
         var n = name.ToLower();
         if (!RefreshEvents.ContainsKey(n))
         {
-            LogError($"Unknown Refresh event {name}, please check if registred");
+            LogError($"Unknown Refresh event {name}, please check if registered");
             RegisterRefreshEvent(name);
         }
 

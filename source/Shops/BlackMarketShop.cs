@@ -5,7 +5,7 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops;
 
-public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon, IDefaultPrice
+public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon, ICustomPrice
 {
     public override string Name => "BlackMarket";
     public override string TabText => "Black Market";
@@ -33,4 +33,5 @@ public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFrom
         base.SetLoadedShop(shop);
     }
 
+    public int GetPrice(TypedShopDefItem item) => PriceHelpers.GetPrice(item);
 }

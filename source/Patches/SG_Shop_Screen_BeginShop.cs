@@ -10,7 +10,7 @@ public static class SG_Shop_Screen_BeginShop
     [HarmonyPrefix]
     public static bool BeginShop(SG_Shop_Screen __instance)
     {
-        UIControler.InitShopWindow(__instance);
+        UIController.InitShopWindow(__instance);
 
         return false;
     }

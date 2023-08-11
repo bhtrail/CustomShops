@@ -5,7 +5,7 @@ using BattleTech.UI;
 
 namespace CustomShops.Shops;
 
-public class SystemShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon, IDefaultPrice
+public class SystemShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFaction, ISaveShop, ITextIcon, ICustomPrice
 {
     public override string Name => "System";
     public override string TabText => "System";
@@ -55,4 +55,6 @@ public class SystemShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFacti
         Tags = Control.State.CurrentSystem.Def.SystemShopItems;
         base.SetLoadedShop(shop);
     }
+
+    public int GetPrice(TypedShopDefItem item) => throw new System.NotImplementedException();
 }

@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using HBS.Logging;
 
 namespace CustomShops;
-
-
 
 public class TSMTagInfo
 {
@@ -63,4 +62,6 @@ public class CustomShopsSettings
     public bool CheckFakeVehicle = false;
     public string FakeVehicleTag = "fake_vehicle_chassis";
     public bool NoDiscountOnLoan { get; set; } = false;
+
+    public Dictionary<string, float> TagPriceModifiers = new();
 }

@@ -65,14 +65,14 @@ public abstract class TaggedShop : IShopDescriptor, IDefaultShop, ISaveShop
                     var col = Control.State.Sim.DataManager.ItemCollectionDefs.Get(item);
                     if (col == null)
                     {
-                        Control.LogError("Cannot retrive ItemCollection " + item + ", skipping");
+                        Control.LogError("Cannot retrieve ItemCollection " + item + ", skipping");
                         continue;
                     }
                     Shop.ItemCollections.Add(col);
                 }
                 catch (Exception e)
                 {
-                    Control.LogError("Cannot retrive ItemCollection " + item + ", skipping", e);
+                    Control.LogError("Cannot retrieve ItemCollection " + item + ", skipping", e);
                 }
             }
         }

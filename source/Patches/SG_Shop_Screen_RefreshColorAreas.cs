@@ -14,7 +14,7 @@ public static class SG_Shop_Screen_RefreshColorAreas
             return;
         }
 
-        UIControler.RefreshColors(UIControler.ActiveShop);
+        UIController.RefreshColors(UIController.ActiveShop);
         __runOriginal = false;
         return;
     }

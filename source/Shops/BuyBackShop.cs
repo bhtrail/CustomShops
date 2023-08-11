@@ -148,7 +148,7 @@ public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFill
                     ShopToUse.ActiveInventory.Remove(shop_item);
                 }
             }
-            int price = UIControler.GetPrice(item);
+            int price = UIController.GetPrice(item);
 
             Control.State.Sim.AddFunds(-price * quantity, null, true, true);
             var mech = Control.State.Sim.DataManager.MechDefs.Get(item.ID);
@@ -161,7 +161,7 @@ public class BuyBackShop : IShopDescriptor, ISaveShop, IDefaultShop, ICustomFill
             return true;
         }
 
-        return UIControler.DefaultPurshase(this, item, quantity);
+        return UIController.DefaultPurshase(this, item, quantity);
     }
 
 }
