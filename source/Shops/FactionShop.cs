@@ -100,5 +100,5 @@ public class FactionShop : TaggedShop, ICustomDiscount, IFillWidgetFromFaction, 
         return 1 + Control.Settings.FactionShopAdjustment;
     }
 
-    public int GetPrice(TypedShopDefItem item) => throw new System.NotImplementedException();
+    public int GetPrice(TypedShopDefItem item) => PriceHelpers.GetPrice(item);    
 }

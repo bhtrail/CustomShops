@@ -56,5 +56,5 @@ public class SystemShop : TaggedShop, IDiscountFromFaction, IFillWidgetFromFacti
         base.SetLoadedShop(shop);
     }
 
-    public int GetPrice(TypedShopDefItem item) => throw new System.NotImplementedException();
+    public int GetPrice(TypedShopDefItem item) => PriceHelpers.GetPrice(item);
 }
