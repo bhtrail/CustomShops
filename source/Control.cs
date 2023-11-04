@@ -9,6 +9,7 @@ using CustomShops.Patches;
 using HBS.Logging;
 using HBS.Util;
 using CustomShops.Shops;
+using Newtonsoft.Json;
 
 namespace CustomShops;
 
@@ -40,11 +41,13 @@ public static class Control
         {
             try
             {
-                Settings = new CustomShopsSettings();
-                JSONSerializationUtility.FromJSON(Settings, settingsJSON);
+                Logger.Log($"settingsJSON : {settingsJSON}");
+                Settings = JsonConvert.DeserializeObject<CustomShopsSettings>(settingsJSON) ?? new CustomShopsSettings();
+                //JSONSerializationUtility.FromJSON(Settings, settingsJSON);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Log($"Failed to load settings: {e.Message}");
                 Settings = new CustomShopsSettings();
             }
 

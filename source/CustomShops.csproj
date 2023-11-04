@@ -1,76 +1,80 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="ValidateBattleTechGameDir">
-  <Target Name="ValidateBattleTechGameDir" Condition="'$(BattleTechGameDir)' == '' Or !Exists('$(BattleTechGameDir)')">
-    <Error Text="BattleTechGameDir variable not set properly" />
-  </Target>
-  <PropertyGroup Condition="'$(CustomShopsModPath)' == '' And Exists('$(BattleTechGameDir)\Mods\Core\CustomShops')">
-    <!-- RogueTech -->
-    <CustomShopsModPath>$(BattleTechGameDir)\Mods\Core\CustomShops</CustomShopsModPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(CustomShopsModPath)' == '' And Exists('$(BattleTechGameDir)\Mods\CustomShops')">
-    <!-- flat dir -->
-    <CustomShopsModPath>$(BattleTechGameDir)\Mods\CustomShops</CustomShopsModPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(CustomShopsModPath)' == ''">
-    <!-- sources dir -->
-    <CustomShopsModPath>$(MSBuildProjectDirectory)\..</CustomShopsModPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net472</TargetFramework>
-    <LangVersion>11</LangVersion>
-    <AssemblySearchPaths>
-      $(ReferencePath);
-      {HintPathFromItem};
-      $(BattleTechGameDir)\BattleTech_Data\Managed\
-    </AssemblySearchPaths>
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    
-  </PropertyGroup>
-  <Target Name="CopyFilesToGame" AfterTargets="CopyFilesToOutputDirectory">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CustomShopsModPath)" />
-  </Target>
-  <PropertyGroup>
-    <!-- avoids IgnoresAccessChecksToAttribute warnings -->
-    <PublicizerRuntimeStrategies>Unsafe</PublicizerRuntimeStrategies>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-  </PropertyGroup>
+	<Target Name="ValidateBattleTechGameDir" Condition="'$(BattleTechGameDir)' == '' Or !Exists('$(BattleTechGameDir)')">
+		<Error Text="BattleTechGameDir variable not set properly" />
+	</Target>
+	<PropertyGroup Condition="'$(CustomShopsModPath)' == '' And Exists('$(BattleTechGameDir)\Mods\Core\CustomShops')">
+		<!-- RogueTech -->
+		<CustomShopsModPath>$(BattleTechGameDir)\Mods\Core\CustomShops</CustomShopsModPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(CustomShopsModPath)' == '' And Exists('$(BattleTechGameDir)\Mods\CustomShops')">
+		<!-- flat dir -->
+		<CustomShopsModPath>$(BattleTechGameDir)\Mods\CustomShops</CustomShopsModPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(CustomShopsModPath)' == ''">
+		<!-- sources dir -->
+		<CustomShopsModPath>$(MSBuildProjectDirectory)\..</CustomShopsModPath>
+	</PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>11</LangVersion>
+		<AssemblySearchPaths>
+			$(ReferencePath);
+			{HintPathFromItem};
+			$(BattleTechGameDir)\BattleTech_Data\Managed\
+		</AssemblySearchPaths>
+		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+
+	</PropertyGroup>
+	<Target Name="CopyFilesToGame" AfterTargets="CopyFilesToOutputDirectory">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CustomShopsModPath)" />
+	</Target>
+	<PropertyGroup>
+		<!-- avoids IgnoresAccessChecksToAttribute warnings -->
+		<PublicizerRuntimeStrategies>Unsafe</PublicizerRuntimeStrategies>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
+	</PropertyGroup>
 	<ItemGroup>
-    <PackageReference Include="Krafs.Publicizer" Version="2.2.1" />
-    <Publicize Include="Assembly-CSharp" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="HarmonyX" Version="2.10.1">
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <Private>False</Private>
-    </Reference>
-	<Reference Include="InControl">
-	<Private>False</Private>
-    </Reference>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <Private>False</Private>
-    </Reference>
-	<Reference Include="UnityEngine.UI">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <Private>False</Private>
-    </Reference>
-	<Reference Include="Unity.TextMeshPro">
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
+		<PackageReference Include="Krafs.Publicizer" Version="2.2.1" />
+		<Publicize Include="Assembly-CSharp" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="HarmonyX" Version="2.10.1">
+			<PrivateAssets>all</PrivateAssets>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="InControl">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="System">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="System.Core">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Unity.TextMeshPro">
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<SpecificVersion>False</SpecificVersion>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
 </Project>

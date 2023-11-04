@@ -16,7 +16,7 @@ public class BlackMarketShop : TaggedShop, IDiscountFromFaction, IFillWidgetFrom
     public FactionValue RelatedFaction => FactionEnumeration.GetBlackMarketFactionValue();
 
     public override bool Exists => Control.State.CurrentSystem != null && Control.State.CurrentSystem.Def.BlackMarketShopItems != null;
-    public override bool CanUse => Control.Settings.DEBUG_FactionShopAlwaysAvailable || (Control.State.CurrentSystem != null && Control.State.Sim.CompanyTags.Contains(Control.State.Sim.Constants.Story.BlackMarketTag));
+    public override bool CanUse => Control.Settings.DEBUG_BlackMarketAlwaysAvailable || (Control.State.CurrentSystem != null && Control.State.Sim.CompanyTags.Contains(Control.State.Sim.Constants.Story.BlackMarketTag));
     public override bool RefreshOnSystemChange => true;
     public override bool RefreshOnMonthChange => false;
     public override bool RefreshOnOwnerChange => false;
