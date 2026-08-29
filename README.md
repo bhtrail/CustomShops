@@ -42,6 +42,14 @@ if you replace this shop in your mod with own variants(like DynamicShops do for 
  
 `"FactionShopAdjustment" : -0.25` - static faction shop discount. in vanila game this is 0.1(also vanila have this based on your reputation but shop avaliable only if allied so it anyway static). 
 
+```"TagPriceModifiers": {
+            "component_type_lostech": 5.0,
+            "unit_royal": 5.0,
+            "component_type_prototype": 5.0,
+            "component_type_clan": 7.5
+        }
+``` - allows to modify prices of certain items in shops by multiply it given coefficient.
+
 ## Creating own shops(Dll modding)
 
 To create own shop you need reference CustomShops, implement interfaces from it to describe it behaviour and register your shop in CustomShops using CustomShops.Control.RegisterShop()
