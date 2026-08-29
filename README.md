@@ -22,11 +22,11 @@ Also it add some optional features, like BuyBack shop and MultiBuy to vanila sho
 
 ### Main Options
 
-`"SystemShop" : true` - enables prebuilded replacement for SystemShop
+`"SystemShop" : true` - enables prebuild replacement for SystemShop
 
-`"FactionShop" : true` - enables prebuilded replacement for FactionShop
+`"FactionShop" : true` - enables prebuild replacement for FactionShop
 
-`"BlackMarketShop" : true` - enables prebuilded replacement for BlackMarket
+`"BlackMarketShop" : true` - enables prebuild replacement for BlackMarket
 
 if you replace this shop in your mod with own variants(like DynamicShops do for example) - set to false or you get all 6 variants. also if you disable it you still not get vanila shops, so if no replacement - no shops at all
 
@@ -37,18 +37,22 @@ if you replace this shop in your mod with own variants(like DynamicShops do for 
 `"AllowMultiBuy" : true` - enable MultiBuy dialog
 
 `"ShowConfirm" : true` - Show confirm if purshase/sell price higher then next option(only for single item operation, for multi item - dialog is shown)
- 
+
 `"ConfirmLowLimit" : 100000` - lower limit of price for confirm dialog to show
- 
+
 `"FactionShopAdjustment" : -0.25` - static faction shop discount. in vanila game this is 0.1(also vanila have this based on your reputation but shop avaliable only if allied so it anyway static). 
 
-```"TagPriceModifiers": {
+"TagPriceModifiers" - allows to modify prices of certain items in shops by multiply it given coefficient. Format:
+
+```json
+    "TagPriceModifiers": 
+        {
             "component_type_lostech": 5.0,
             "unit_royal": 5.0,
             "component_type_prototype": 5.0,
             "component_type_clan": 7.5
         }
-``` - allows to modify prices of certain items in shops by multiply it given coefficient.
+```
 
 ## Creating own shops(Dll modding)
 
@@ -56,11 +60,11 @@ To create own shop you need reference CustomShops, implement interfaces from it 
 
 ### Interfaces
 
-###IShopDesctiptor
+### IShopDesctriptor
 
 base interface for shop, need to be implemented
 
-```
+```c#
     public interface IShopDescriptor
     {
         string Name { get; }
@@ -90,14 +94,13 @@ Exists - checks if this shop exists in system, in simple - need to create shop t
 
 CanUse - check if shop avaliable for player - if return false tab still be created but will be disabled(like black market when you not have access to it)
 
-
-RefreshShop - called when shop need to refresh its inventory(also on shop initilisation)
+RefreshShop - called when shop need to refresh its inventory(also on shop initialization)
 
 ### IconInterfaces
 
 Define what icon use for shop tab. if none implemented - default planet icon used
 
-```
+```c#
     public interface ISpriteIcon
     {
         Sprite Sprite { get; }
@@ -116,13 +119,14 @@ ITextIcon - define icon by ressourseid. given id will be loaded and used as icon
 Define that shop should be saved and loaded into savegame. if not used - on game load shop will be refreshed
 If shop not found in save game - it will be refreshed
 
-```
+```c#
     public interface ISaveShop
     {
         Shop GetShopToSave();
         void SetLoadedShop(Shop shop);
     }
 ```
+
 GetShopToSave - should return Battletech.Shop to save(basicly you need Shop.ActiveInventory)
 
 SetLoadedShop - Called when shop successfully loaded
@@ -130,7 +134,8 @@ SetLoadedShop - Called when shop successfully loaded
 ### IDefaultShop
 
 Define Shop to use for shop inventory and purshase operations(currently only avaliable interface of this type. more, that dont require Battletech.Shop, interfaces in development)
-```
+
+```c#
     public interface IDefaultShop
     {
         Shop ShopToUse { get; }
@@ -140,7 +145,8 @@ Define Shop to use for shop inventory and purshase operations(currently only ava
 ### IListShop
 
 Define shop that keap its content in List not Shop class(you still need convert it to Shop for savegame)
-```
+
+```c#
     public interface IListShop
     {
         List<ShopDefItem> Items { get; }
@@ -153,19 +159,18 @@ Define shop with custom purshase handler. Purshase called when item already purs
 shop itself, adding funds and item, and other stuff you need. You can use `CustomShops.UIControl.DefaultPurshase(this, item, quantity)`(defined for both list and default shops) and implement only 
 custom stuff if any changes on usual buy pursahse process not needed
 
-```
+```c#
     public interface ICustomPurshase
     {
         void Purshase(ShopDefItem item, int quantity);
     }
 ```
 
-
 ### IRelatedFaction
 
 Base interface for other interfaces that require faction associated with shop. do nothing itself
 
-```
+```c#
  public interface IRelatedFaction
     {
         BattleTech.FactionValue RelatedFaction { get; }
@@ -176,7 +181,7 @@ Base interface for other interfaces that require faction associated with shop. d
 
 used to fill MiniFactionWidget(faction heraldy with discount text and reputation icon on top of shop image)
 
-```
+```c#
     public interface IFillWidgetFromFaction : IRelatedFaction
     {
     }
@@ -184,8 +189,9 @@ used to fill MiniFactionWidget(faction heraldy with discount text and reputation
     public interface ICustomFillWidget
     {
         void FillFactionWidget(ShopScreenHelper helper);
-    }
+    }    
 ```
+
 IFillWidgetFromFaction - fill widget from related faction
 
 ICustomFillWidget - allow to custom fill this widget. gives helper class with access to all ui elements of it
@@ -194,9 +200,9 @@ ICustomFillWidget - allow to custom fill this widget. gives helper class with ac
 
 This interface control how prices and discounts handle. Full price is base price * discount;
 
+Price interfaces
 
-Price interfaces 
-```
+```c#
     public interface IDefaultPrice
     {
     }
@@ -211,9 +217,10 @@ IDefaultPrice - return item.Description.Cost(mechdef.MechPartCost for parts)
 
 ICustomPrice - should return base price of given item. TypedShopDefItem - ShopDefItem with cashed MechComponentDef/MechDef/Description to use
 
-Discount interfaces 
-```
-	public interface IDiscountFromFaction : IRelatedFaction
+Discount interfaces
+
+```C#
+    public interface IDiscountFromFaction : IRelatedFaction
     {
     }
 
@@ -226,6 +233,7 @@ Discount interfaces
     {
     }
 ```
+
 IDiscountFromFaction - discount based on reputation of related faction
 
 INoDiscount - no discount(allways 1)
@@ -235,8 +243,9 @@ ICustomDiscount - return discount for item. if item is null - should return gene
 ## ShopRefresh
 
 To fill/refresh shop content IShopDescriptor.RefreshShop() called. You can subscribe your shop to predefined events(case indiferent)
+
 ```
-	"Daily"
+    "Daily"
     "SystemChange"
     "MonthEnd"
     "ContractComplete"
