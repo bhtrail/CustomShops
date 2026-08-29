@@ -17,11 +17,11 @@ public static class PriceHelpers
         {
             if (tagSet.Contains(tag))
             {
-                priceModifier = Control.Settings.TagPriceModifiers[tag];
-                Control.LogDebug(DInfo.Price, $"price coefficient = {priceModifier} by tag = '{tag}'");
-                break;
+                priceModifier = priceModifier * Control.Settings.TagPriceModifiers[tag];
+                Control.LogDebug(DInfo.Price, $"price coefficient = {priceModifier} by tag = '{tag}'");                
             }
         }
+        Control.LogDebug(DInfo.Price, $"Full coefficient = {priceModifier}");
         return (int)Math.Round(price * priceModifier);
     }
 }
